@@ -16,14 +16,16 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public Guid? PaginaPadreID { get; set; }
 
         [Display(Name = "Título"), StringLength(150)]
+        [Required(ErrorMessage = "Es necesario el título de la página")]
         public string Titulo { get; set; }
 
         [Display(Name = "Etiqueta para menú"), StringLength(30)]
+        [Required(ErrorMessage = "Falta indicar la etiqueta para el menú")]
         public string EtiquetaMenu { get; set; }
 
         [StringLength(1000)]
         public string Resumen { get; set; }
-
+                
         public string Contenido { get; set; }
 
         [Display(Name = "Dirección URL"), StringLength(255)]
@@ -57,6 +59,8 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [ForeignKey("PaginaPadreID")]
         public virtual ICollection<Pagina> PaginasHijo { get; set; }
 
+        [ForeignKey("PropietarioID")]
+        public virtual ICollection<Archivo> Archivos { get; set; }
     } // Pagina
 
     public enum PaginaEstatus
