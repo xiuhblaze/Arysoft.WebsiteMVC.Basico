@@ -23,6 +23,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime FechaPublicacion { get; set; }
 
+        [Required(ErrorMessage = "Es necesario el contenido de la noticia")]
         public string Contenido { get; set; }
 
         [StringLength(150)]
@@ -41,10 +42,10 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
     public enum NoticiaEstatus
     {
-        Ninguno,
-        Nueva,
-        Publicada,
-        Oculta,
-        Eliminada
+        Ninguno,    // Noticia temporal, aun no ha sido guardada
+        Nueva,      // Noticia nueva, aun no es visible al público
+        Publicada,  // Noticia publicada, la puede ver el público
+        Oculta,     // No visible
+        Eliminada   // Marcada como eliminada, solo un administrador la puede eliminar realmente o volverla a habilitar
     }
 }
