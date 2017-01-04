@@ -31,13 +31,13 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [Display(Name = "Dirección URL"), StringLength(255)]
         public string TargetUrl { get; set; }
 
-        public bool Visible { get; set; }
+        public PaginaEstatus Estatus { get; set; }
         public PaginaTarget Target { get; set; }
 
-        [Display(Name = "Alta"), DisplayFormat(DataFormatString = "{0:d}")]
+        [DataType(DataType.DateTime), Display(Name = "Alta"), DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime FechaAlta { get; set; }
 
-        [Display(Name = "Actualización"), DisplayFormat(DataFormatString = "{0:d}")]
+        [DataType(DataType.DateTime), Display(Name = "Actualización"), DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime FechaActualizacion { get; set; }
 
         [Display(Name = "Visitas")]
