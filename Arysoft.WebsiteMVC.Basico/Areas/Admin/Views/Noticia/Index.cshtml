@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Arysoft.WebsiteMVC.Basico.Models.Noticia>
+
+@{
+    ViewBag.Title = "Noticias";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Noticias</h2>
+
+<p>
+    @Html.ActionLink("Nueva noticia", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Titulo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Resumen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaPublicacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contenido)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Autor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImagenPrincipal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Estatus)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Titulo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Resumen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaPublicacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contenido)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Autor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImagenPrincipal)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estatus)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.NoticiaID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.NoticiaID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.NoticiaID })
+        </td>
+    </tr>
+}
+
+</table>

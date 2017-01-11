@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+﻿@{    
+    string messageBox = string.Empty;
+    string showMessageBox = string.Empty;
+
+    if (TempData["MessageBox"] != null)
+    {
+        messageBox = TempData["MessageBox"].ToString().Replace(Environment.NewLine, "<br />");
+        showMessageBox = "$('#messageBoxModal').modal('show');";
+    }
+}
+
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -8,8 +19,28 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
+    @RenderSection("stylesheets", required: false)
+
 </head>
 <body>
+
+    <div id="messageBoxModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Ciudapp Zapotlán</h4>
+                </div>
+                <div class="modal-body">
+                    @messageBox
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -21,10 +52,18 @@
                 @Html.ActionLink("Arysoft", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                <ul class="nav navbar-nav">                    
+                    <li>@Html.ActionLink("Acerca de", "About", "Home", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("Contacto", "Contact", "Home", new { area = "" }, null)</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Páginas", "Index", "Pagina", new { area = "Admin" }, null)</li>
+                            <li>@Html.ActionLink("Noticias", "Index", "Noticia", new { area = "Admin" }, null)</li>
+                            <li>@Html.ActionLink("Usuarios", "Index", "Usuario", new { area = "Admin" }, null)</li>
+                        </ul>
+                    </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -41,5 +80,10 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <script>
+        @Html.Raw(showMessageBox)
+    </script>
+
 </body>
 </html>
