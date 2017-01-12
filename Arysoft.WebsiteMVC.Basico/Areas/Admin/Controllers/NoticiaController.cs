@@ -46,6 +46,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult Create([Bind(Include = "NoticiaID,Titulo,Resumen,FechaPublicacion,Contenido,Autor,ImagenPrincipal,Estatus")] Noticia noticia)
         {
             if (ModelState.IsValid)
