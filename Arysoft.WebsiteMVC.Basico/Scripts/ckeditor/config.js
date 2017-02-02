@@ -3,6 +3,28 @@
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
+CKEDITOR.editorConfig = function (config) {
+    config.toolbarGroups = [
+		{ name: 'styles', groups: ['styles'] },
+		{ name: 'clipboard', groups: ['clipboard', 'undo'] },
+		{ name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+		{ name: 'forms', groups: ['forms'] },
+		{ name: 'colors', groups: ['colors'] },
+		{ name: 'tools', groups: ['tools'] },
+		{ name: 'document', groups: ['mode', 'document', 'doctools'] },
+		'/',
+		{ name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+		{ name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph'] },
+		{ name: 'links', groups: ['links'] },
+		{ name: 'insert', groups: ['insert'] },
+		'/',
+		{ name: 'others', groups: ['others'] },
+		{ name: 'about', groups: ['about'] }
+    ];
+
+    config.removeButtons = 'Save,Templates,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Language,BidiRtl,BidiLtr,Flash,Smiley,PageBreak,Styles,FontSize,Font,About,PasteText,PasteFromWord,NewPage,Preview,Print';
+};
+/*
 CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here.
 	// For complete reference see:
@@ -36,3 +58,4 @@ CKEDITOR.editorConfig = function( config ) {
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 };
+*/

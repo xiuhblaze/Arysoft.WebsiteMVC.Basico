@@ -216,17 +216,23 @@
     <Compile Include="Migrations\201701062358526_CreacionInicial.Designer.cs">
       <DependentUpon>201701062358526_CreacionInicial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701130442464_TablaOpciones.cs" />
+    <Compile Include="Migrations\201701130442464_TablaOpciones.Designer.cs">
+      <DependentUpon>201701130442464_TablaOpciones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Archivo.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Noticia.cs" />
+    <Compile Include="Models\Opcion.cs" />
     <Compile Include="Models\Pagina.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Archivos\Noticias\leelee sobieski.jpg" />
     <Content Include="Content\bootstrap-chosen.css" />
     <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-datepicker.min.css" />
@@ -890,6 +896,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201701062358526_CreacionInicial.resx">
       <DependentUpon>201701062358526_CreacionInicial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701130442464_TablaOpciones.resx">
+      <DependentUpon>201701130442464_TablaOpciones.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

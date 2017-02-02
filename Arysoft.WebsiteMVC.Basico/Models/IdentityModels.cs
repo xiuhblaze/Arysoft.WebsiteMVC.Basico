@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -28,6 +27,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public DbSet<Archivo> Archivos { get; set; }
         public DbSet<Pagina> Paginas { get; set; }
         public DbSet<Noticia> Noticias { get; set; }
+        public DbSet<Opcion> Opciones { get; set; }
 
         public ApplicationDbContext()
             : base("ArysoftSqlConnectionString", throwIfV1Schema: false)
