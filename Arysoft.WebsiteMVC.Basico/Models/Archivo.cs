@@ -20,9 +20,18 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public string Descripcion { get; set; }
 
         [StringLength(200)]
-        public string Etiquetas { get; set; }
+        public string Tags { get; set; }
+
+        [Display(Name = "Estatus")]
+        public StatusTipo Status { get; set; }
 
         [DataType(DataType.DateTime), Display(Name = "Alta"), DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime FechaAlta { get; set; }
+
+        [DataType(DataType.DateTime), Display(Name = "Actualización"), DisplayFormat(DataFormatString = "{0:d}")]
+        public DateTime FechaActualizacion { get; set; }
+
+        [StringLength(256)]
+        public string UsuarioActualizacion { get; set; }
     }
 }

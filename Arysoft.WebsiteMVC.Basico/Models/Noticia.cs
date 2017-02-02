@@ -19,8 +19,8 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [StringLength(1000)]
         public string Resumen { get; set; }
 
-        [DataType(DataType.DateTime), Display(Name = "Publicación")]
-        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Publicación")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaPublicacion { get; set; }
 
         [Required(ErrorMessage = "Es necesario el contenido de la noticia")]
@@ -30,6 +30,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public string Autor { get; set; }
         
         [StringLength(255)]
+        [Display(Name = "Imagen principal")]
         public string ImagenPrincipal { get; set; }
 
         public NoticiaEstatus Estatus { get; set; }
@@ -42,6 +43,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
     public enum NoticiaEstatus
     {
+        [Display(Name = "(seleccionar estatus)")]
         Ninguno,    // Noticia temporal, aun no ha sido guardada
         Nueva,      // Noticia nueva, aun no es visible al público
         Publicada,  // Noticia publicada, la puede ver el público

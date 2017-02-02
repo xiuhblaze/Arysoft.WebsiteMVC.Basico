@@ -1,91 +1,175 @@
 ﻿@model Arysoft.WebsiteMVC.Basico.Models.Noticia
 
+@using Arysoft.WebsiteMVC.Basico.Models;
+
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar noticia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
-
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Noticia</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.NoticiaID)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Resumen, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Resumen, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Resumen, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.FechaPublicacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.FechaPublicacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FechaPublicacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Contenido, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Contenido, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Contenido, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Autor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Autor, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Autor, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ImagenPrincipal, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ImagenPrincipal, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ImagenPrincipal, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Estatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Estatus, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Estatus, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
+@section stylesheets {
+    <link href="~/Content/bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-datepicker.css" rel="stylesheet" />
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+<h2>Noticia <small>EDITAR</small></h2>
+
+@using (Html.BeginForm("Edit", "Noticia", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="well">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Información de la noticia</legend>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.NoticiaID)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "control-label col-md-2 text-primary" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Resumen, htmlAttributes: new { @class = "control-label col-md-2 text-primary" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Resumen, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Resumen, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FechaPublicacion, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.FechaPublicacion, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "dd/mm/aaaa" } })
+                        @Html.ValidationMessageFor(model => model.FechaPublicacion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Contenido, htmlAttributes: new { @class = "control-label col-md-2 text-primary" })
+                    <div class="col-md-10">                        
+                        @Html.TextAreaFor(Model => Model.Contenido, 4, 0, null)
+                        @Html.ValidationMessageFor(model => model.Contenido, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Autor, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Autor, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Autor, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ImagenPrincipal, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @{
+                            string ruta = System.IO.Path.Combine(Server.MapPath("~/Archivos/Noticias/"), Model.NoticiaID.ToString(), Model.ImagenPrincipal);
+
+                            if (string.IsNullOrEmpty(Model.ImagenPrincipal) || !System.IO.File.Exists(ruta))
+                            {
+                                string mensaje = "Archivo que contiene la imagen principal de la noticia";
+
+                                if (!string.IsNullOrEmpty(Model.ImagenPrincipal) && !System.IO.File.Exists(ruta))
+                                {
+                                    mensaje = string.Format("La imagen '{0}' no se encuentra, suba nuevamente el archivo con la imágen principal.", Model.ImagenPrincipal);
+                                }
+
+                                <p class="help-block text-danger">@mensaje</p>
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                        <img data-src="holder.js/100%x100%" alt="vista previa" />                                        
+                                    </div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>                                    
+                                    <div>
+                                        <span class="btn btn-default btn-file">
+                                            <span class="fileinput-new">Seleccionar imagen</span>
+                                            <span class="fileinput-exists">Cambiar</span>
+                                            <input type="file" id="archivoImagenPrincipal" name="archivoImagenPrincipal" />
+                                        </span>
+                                        <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Quitar</a>
+                                    </div>
+                                </div>
+                            }
+                            else {
+                                @Html.HiddenFor(model => model.ImagenPrincipal)
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="thumbnail">
+                                            <a href="~/Archivos/Noticias/@Model.NoticiaID.ToString()/@Model.ImagenPrincipal" target="_blank">
+                                                <img src="~/Archivos/Noticias/@Model.NoticiaID.ToString()/@Model.ImagenPrincipal" />
+                                            </a>
+                                            <div class="caption">
+                                                <p class="text-right">
+                                                    @Html.Raw(
+                                                    @Html.ActionLink("[reemplazar]", "EliminarArchivo", new { id = Model.NoticiaID, nombre = "Identificacion" }, new { @class = "btn btn-default", @title = "Eliminar archivo" }).ToHtmlString()
+                                                        .Replace("[reemplazar]", "<span class=\"glyphicon glyphicon-trash\" style=\"font-size: 14px;\"></span>")
+                                                )
+                                                </p>
+                                            </div>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Estatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(model => model.Estatus, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Estatus, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10 text-right">
+                        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+
+                        <button type="submit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+    
+}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/ckeditor/ckeditor.js"></script>
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+<script>
+
+        CKEDITOR.replace('Contenido', {
+            height: 500
+        });
+
+        $(function () {
+            $('.chosen-select').chosen();
+            $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
+        });
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            weekStart: 0,
+            todayBtn: "linked",
+            language: "es",
+            autoclose: true
+        });
+
+</script>
 }
