@@ -91,9 +91,9 @@
                                 Admin
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-                                @Html.ActionLink("Páginas", "Index", "Pagina", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                @Html.ActionLink("Noticias", "Index", "Noticia", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                @Html.ActionLink("Usuarios", "Index", "Usuario", new { area = "Admin" }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Páginas", "Index", "Paginas", new { area = "Admin" }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Noticias", "Index", "Noticias", new { area = "Admin" }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Usuarios", "Index", "Usuarios", new { area = "Admin" }, new { @class = "dropdown-item" })
                             </div>
                         </li>
                     </ul>
@@ -122,6 +122,5 @@
     <script>
         @Html.Raw(showMessageBox)
     </script>
-
 </body>
 </html>

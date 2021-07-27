@@ -208,7 +208,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\Controllers\NoticiaController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NoticiasController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -226,6 +227,10 @@
     <Compile Include="Migrations\202107220509054_Cambios en Archivo.cs" />
     <Compile Include="Migrations\202107220509054_Cambios en Archivo.Designer.cs">
       <DependentUpon>202107220509054_Cambios en Archivo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107270009416_PaginaNoticiaActualizado.cs" />
+    <Compile Include="Migrations\202107270009416_PaginaNoticiaActualizado.Designer.cs">
+      <DependentUpon>202107270009416_PaginaNoticiaActualizado.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -272,11 +277,6 @@
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticia\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticia\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticia\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticia\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticia\Index.cshtml" />
     <Content Include="Content\bootstrap-chosen.scss" />
     <Content Include="Content\bootstrap-chosen.less" />
     <Content Include="Content\bootstrap.min.css.map" />
@@ -290,6 +290,12 @@
     <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
     <Content Include="Content\jasny-bootstrap.css.map" />
+    <Content Include="Areas\Admin\Views\Noticias\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Noticias\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Noticias\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Noticias\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Noticias\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Alpha.pubxml" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
@@ -1103,6 +1109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107220509054_Cambios en Archivo.resx">
       <DependentUpon>202107220509054_Cambios en Archivo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107270009416_PaginaNoticiaActualizado.resx">
+      <DependentUpon>202107270009416_PaginaNoticiaActualizado.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

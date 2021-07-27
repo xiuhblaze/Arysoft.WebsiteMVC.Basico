@@ -22,3 +22,13 @@ public enum BoolTipo
     Si,
     No
 }
+
+public enum IdiomaTipo
+{ 
+    [Display(Name = "(idioma)")]
+    Ninguno,
+    [Display(Name = "Español")]
+    Espannol,
+    [Display(Name = "Inglés")]
+    Ingles
+}

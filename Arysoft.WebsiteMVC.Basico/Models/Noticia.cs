@@ -19,21 +19,42 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [StringLength(1000)]
         public string Resumen { get; set; }
 
+        [Required(ErrorMessage = "Es necesario el contenido de la noticia")]
+        public string HTMLContent { get; set; }
+
+        [StringLength(150)]
+        public string Autor { get; set; }
+
+        public BoolTipo TieneGaleria { get; set; }
+
+        public int ContadorVisitas { get; set; }
+
+        public IdiomaTipo Idioma { get; set; }
+
+        [DataType(DataType.Date)]
         [Display(Name = "Publicación")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaPublicacion { get; set; }
 
-        [Required(ErrorMessage = "Es necesario el contenido de la noticia")]
-        public string Contenido { get; set; }
-
-        [StringLength(150)]
-        public string Autor { get; set; }
-        
         [StringLength(255)]
         [Display(Name = "Imagen principal")]
-        public string ImagenPrincipal { get; set; }
+        public string ImagenArchivo { get; set; }
 
-        public NoticiaEstatus Estatus { get; set; }
+        public int MeGusta { get; set; }
+
+        public NoticiaEstatus Status { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Creación")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime FechaCreacion { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Actualización")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime FechaActualizacion { get; set; }
+
+        public string UsuarioActualizacion { get; set; }
 
         // VIRTUAL
 
@@ -43,7 +64,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
     public enum NoticiaEstatus
     {
-        [Display(Name = "(seleccionar estatus)")]
+        [Display(Name = "(estatus)")]
         Ninguno,    // Noticia temporal, aun no ha sido guardada
         Nueva,      // Noticia nueva, aun no es visible al público
         Publicada,  // Noticia publicada, la puede ver el público
