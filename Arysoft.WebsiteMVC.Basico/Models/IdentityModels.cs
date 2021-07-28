@@ -4,12 +4,21 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations;
 
 namespace Arysoft.WebsiteMVC.Basico.Models
 {
     // Puede agregar datos del perfil del usuario agregando más propiedades a la clase ApplicationUser. Para más información, visite http://go.microsoft.com/fwlink/?LinkID=317594.
     public class ApplicationUser : IdentityUser
     {
+        [StringLength(50)]
+        public string Nombres { get; set; }
+
+        [StringLength(50)]
+        public string PrimerApellido { get; set; }
+
+        [StringLength(50)]
+        public string SegundoApellido { get; set; }
 
         // Aquí se pueden poner propiedades para la tabla del usuario
 

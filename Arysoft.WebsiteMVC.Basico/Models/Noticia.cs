@@ -42,7 +42,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
         public int MeGusta { get; set; }
 
-        public NoticiaEstatus Status { get; set; }
+        public NoticiaStatus Status { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Creación")]
@@ -62,7 +62,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public virtual ICollection<Archivo> Archivos { get; set; }
     }
 
-    public enum NoticiaEstatus
+    public enum NoticiaStatus
     {
         [Display(Name = "(estatus)")]
         Ninguno,    // Noticia temporal, aun no ha sido guardada

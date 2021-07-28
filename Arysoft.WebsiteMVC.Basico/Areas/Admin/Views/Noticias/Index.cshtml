@@ -1,111 +1,101 @@
-﻿@model IEnumerable<Arysoft.WebsiteMVC.Basico.Models.Noticia>
+﻿@model PagedList.IPagedList<NoticiaIndexListViewModel>
+
+@using Arysoft.WebsiteMVC.Basico.Models;
+@using PagedList.Mvc;
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Noticias";
 }
 
-<h2>Index</h2>
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="details-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Detalles</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div> <!-- modal-content -->
+    </div>
+</div>
+
+<h2>Noticias</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Titulo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Resumen)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HTMLContent)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Autor)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TieneGaleria)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ContadorVisitas)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Idioma)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FechaPublicacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImagenArchivo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MeGusta)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FechaCreacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FechaActualizacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UsuarioActualizacion)
-        </th>
-        <th></th>
-    </tr>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    Título
+                </th>
+                <th>
+                    Resumen
+                </th>
+                <th>
+                    Autor
+                </th>
+                <th>
+                    Visitas
+                </th>
+                <th>
+                    Publicado
+                </th>
+                <th>
+                    Idioma
+                </th>
+                <th>
+                    MeGusta
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Titulo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Resumen)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HTMLContent)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Autor)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TieneGaleria)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ContadorVisitas)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Idioma)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaPublicacion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImagenArchivo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MeGusta)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaCreacion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaActualizacion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UsuarioActualizacion)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.NoticiaID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.NoticiaID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.NoticiaID })
-        </td>
-    </tr>
-}
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Titulo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Resumen)
+                    </td>                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Autor)
+                    </td>                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContadorVisitas)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Idioma)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaPublicacion)
+                    </td>                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MeGusta)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.NoticiaID }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.NoticiaID }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.NoticiaID })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-</table>
+</div>
