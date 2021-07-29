@@ -26,6 +26,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public IdiomaTipo Idioma { get; set; }
 
         [Display(Name = "Publicado")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaPublicacion { get; set; }
 
         public int MeGusta { get; set; }

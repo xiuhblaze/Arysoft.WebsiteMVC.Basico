@@ -28,74 +28,108 @@
 
 <h2>Noticias</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th></th>
-                <th>
-                    Título
-                </th>
-                <th>
-                    Resumen
-                </th>
-                <th>
-                    Autor
-                </th>
-                <th>
-                    Visitas
-                </th>
-                <th>
-                    Publicado
-                </th>
-                <th>
-                    Idioma
-                </th>
-                <th>
-                    MeGusta
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
 
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Titulo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Resumen)
-                    </td>                    
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Autor)
-                    </td>                    
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ContadorVisitas)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Idioma)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FechaPublicacion)
-                    </td>                    
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MeGusta)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.NoticiaID }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.NoticiaID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.NoticiaID })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Index", "Noticias", FormMethod.Get, new { @class = "form-inline" }))
+        {
+            @Html.Raw(
+                Html.ActionLink("[nuevo]", "Create", null, new { @class = "btn btn-outline-primary mr-3", @title = "Nueva noticia" }).ToHtmlString()
+                    .Replace("[nuevo]", "<i class='bi-file-earmark-fill'></i>")
+            )
+            <label class="sr-only" for="">Buscar</label>
+            @Html.TextBox("buscar", ViewBag.Filtro as string, htmlAttributes: new { @class = "form-control mr-sm-2", @placeholder = "buscar..." })
+            <button type="submit" id="buscarButton" class="btn btn-primary" title="Buscar...">
+                <i class="bi-search"></i>
+            </button>
+        }
+    </div>
 </div>
+<hr />
+<div class="row row-cols-1 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-2">
+    @foreach (var item in Model)
+    {
+        string classCard = "card";
+        string classStatusIcon = "";
+
+        switch (item.Status)
+        {
+            case NoticiaStatus.Nueva:
+                classStatusIcon = "<i class='bi-stars mr-1 text-warning icon' title='Nueva'></i>";
+                classCard += " border-primary";
+                break;
+            case NoticiaStatus.Publicada:
+                classStatusIcon = "<i class='bi-cursor mr-1 text-primary icon' title='Publicada'></i>";
+                break;
+            case NoticiaStatus.Oculta:
+                classStatusIcon = "<i class='bi-eye-slash mr-1 icon' title='Oculta'></i>";
+                classCard += " border-muted text-muted";
+                break;
+            case NoticiaStatus.Eliminada:
+                classStatusIcon = "<i class='bi-x-circle mr-1 icon text-danger' title='Eliminada'></i>";
+                classCard += " border-danger";
+                break;
+        }
+
+        if (item.TieneGaleria == BoolTipo.Si)
+        {
+            classStatusIcon += "<i class='bi-image icon text-success' title='Galeria habilitda'></i>";
+        }
+        else
+        {
+            classStatusIcon += "<i class='bi-image text-muted icon' title='Galeria deshabilitada'></i>";
+        }
+
+    <div class="col mb-3">
+        <div class="@classCard">
+            <div class="card-body" style="cursor: pointer" onclick="getDetails('@item.NoticiaID')">
+                <h5 class="card-title">
+                    @Html.Raw(classStatusIcon)
+                    @Html.DisplayFor(modelItem => item.Titulo)
+                </h5>
+                <h6 class="card-subtitle mb-2 text-muted" title="Fecha de publicación">
+                    @Html.DisplayFor(modelItem => item.FechaPublicacion)
+
+                </h6>
+                <p class="card-text">@Html.DisplayFor(modelItem => item.Resumen)</p>
+                <p>
+                    <span class="badge badge-primary">
+                        <i class="bi-hand-thumbs-up-fill"></i>
+                        Me gusta: @Html.DisplayFor(modelItem => item.MeGusta)
+                    </span>
+                    <span class="badge badge-success">
+                        <i class="bi-eye-fill"></i>
+                        Visitas: @Html.DisplayFor(modelItem => item.ContadorVisitas)
+                    </span>
+                </p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-right">
+                    @Html.Raw(
+                        @Html.ActionLink("[editar]", "Edit", new { id = item.NoticiaID }, new { @class = "card-link" }).ToHtmlString()
+                            .Replace("[editar]", "<i class='bi-pencil-square' style='font-size: 1.2rem;'></i>")
+                    )
+                    <a href="#" onclick="getDetails('@item.NoticiaID'); return false;" class="card-link">
+                        <i class='bi-info-square' style='font-size: 1.2rem;' title="Detalles"></i>
+                    </a>
+                    <a href="#" onclick="getDelete('@item.NoticiaID'); return false;" class="card-link text-danger">
+                        <i class='bi-x-square' style='font-size: 1.2rem;' title="Eliminar"></i>
+                    </a>
+                </li>
+            </ul>
+            <div class="card-footer">
+                <small class="text-muted">Autor: @Html.DisplayFor(modelItem => item.Autor)</small>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+@Html.PagedListPager(Model, pagina => Url.Action("Index", new
+    {
+        pagina,
+        orden = ViewBag.Orden,
+        filtro = ViewBag.Filtro
+    })
+)
+

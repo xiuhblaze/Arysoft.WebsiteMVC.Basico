@@ -10,7 +10,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
         // CONSTANTES
 
         public const string TITULO_APP = "Basic Website Admin";
-        public const int ELEMENTOS_PAGINA = 50;
+        public const int ELEMENTOS_PAGINA = 3;
         public const string SESION_PERSONAS_FILTRO = "SESION_PERSONAS_FILTRO";
     }
 }
