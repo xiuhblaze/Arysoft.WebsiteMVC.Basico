@@ -89,7 +89,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
 
             List<NoticiaIndexListViewModel> noticiasViewModel = new List<NoticiaIndexListViewModel>();
-            foreach (var noticia in await noticias.ToListAsync())
+            foreach (Noticia noticia in await noticias.ToListAsync())
             {
                 noticiasViewModel.Add(new NoticiaIndexListViewModel(noticia));
             }
@@ -105,15 +105,27 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         {
             if (id == null)
             {
+                TempData["MessageBox"] = "No se recibió el identificador";
+                if (Request.IsAjaxRequest()) return Content("BadRequest");
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Noticia noticia = await db.Noticias.FindAsync(id);
+            Noticia noticia = await db.Noticias
+                .Include(n => n.Archivos)
+                .FirstOrDefaultAsync(n => n.NoticiaID == id);                
             if (noticia == null)
             {
+                TempData["MessageBox"] = "No se encontró el registro del identificador";
+                if (Request.IsAjaxRequest()) return Content("HttpNotFound");
                 return HttpNotFound();
             }
+            
+            if (Request.IsAjaxRequest())
+            {
+                NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "details", true);
+                return PartialView("_details", n);
+            }
             return View(noticia);
-        }
+         } // Details
 
         // GET: Admin/Noticias/Create
         public ActionResult Create()

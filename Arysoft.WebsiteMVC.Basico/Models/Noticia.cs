@@ -56,10 +56,10 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
         public string UsuarioActualizacion { get; set; }
 
-        // VIRTUAL
+        // RELACIONES
 
         [ForeignKey("PropietarioID")]
-        public virtual ICollection<Archivo> Archivos { get; set; }
+        public ICollection<Archivo> Archivos { get; set; }
     }
 
     public enum NoticiaStatus
