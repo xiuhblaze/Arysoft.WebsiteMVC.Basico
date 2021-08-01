@@ -11,7 +11,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="details-modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="detailsModalLabel">Detalles</h5>
+                <h5 class="modal-title" id="detailsModalLabel">Noticia</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -20,7 +20,7 @@
                 ...
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">...</button>
             </div>
         </div> <!-- modal-content -->
     </div>
@@ -70,11 +70,12 @@
         switch (item.Status)
         {
             case NoticiaStatus.Nueva:
-                classStatusIcon = "<i class='bi-stars mr-1 text-warning icon' title='Nueva'></i>";
+                classStatusIcon = "<i class='bi-stars mr-1 text-primary icon' title='Nueva'></i>";
                 classCard += " border-primary";
                 break;
             case NoticiaStatus.Publicada:
-                classStatusIcon = "<i class='bi-cursor mr-1 text-primary icon' title='Publicada'></i>";
+                classStatusIcon = "<i class='bi-cursor mr-1 text-success icon' title='Publicada'></i>";
+                classCard += " border-success";
                 break;
             case NoticiaStatus.Oculta:
                 classStatusIcon = "<i class='bi-eye-slash mr-1 icon' title='Oculta'></i>";
@@ -171,6 +172,42 @@
 
         function getDetails(id) {
             var url = '@Url.Action("Details", "Noticias")/' + id;
+
+            $('#detailsModal').modal('show');
+            $.ajax({
+                cache: false,
+                async: true,
+                type: 'get',
+                url: url,
+                data: {},
+                beforeSend: function () {
+                    $('#details-modal-body').html('<p class="text-center" style="margin: 50px;"><img src="@Url.Content("~/Images/ajax-loader.gif")" /></p>');
+                },
+                success: function (vista) {
+                    switch (vista) {
+                        case "BadRequest":
+                            alert('No se recibió un identificador de la noticia');
+                            $('#detailsModal').modal('hide');
+                            $('#details-modal-content').html(modalDetailsOriginalContent);
+                            break;
+                        case "HttpNotFound":
+                            alert('No se encontró la noticia solicitada');
+                            $('#detailsModal').modal('hide');
+                            $('#details-modal-content').html(modalDetailsOriginalContent);
+                            break;
+                        default:
+                            $('#details-modal-content').html(vista);
+                            break;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('A ocurrido una excepción: ' + status + '\n error: ' + error);
+                }
+            });
+        } // getDetails
+
+        function getDelete(id) {
+            var url = '@Url.Action("Delete", "Noticias")/' + id;
 
             $('#detailsModal').modal('show');
             $.ajax({

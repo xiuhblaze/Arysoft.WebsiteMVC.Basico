@@ -111,7 +111,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
             Noticia noticia = await db.Noticias
                 .Include(n => n.Archivos)
-                .FirstOrDefaultAsync(n => n.NoticiaID == id);                
+                .Include(n => n.Notas)
+                .FirstOrDefaultAsync(n => n.NoticiaID == id);
             if (noticia == null)
             {
                 TempData["MessageBox"] = "No se encontró el registro del identificador";
@@ -128,74 +129,134 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
          } // Details
 
         // GET: Admin/Noticias/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
-        }
+            await EliminarRegistrosTemporalesAsync(User.Identity.Name);
 
-        // POST: Admin/Noticias/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "NoticiaID,Titulo,Resumen,HTMLContent,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion,FechaActualizacion,UsuarioActualizacion")] Noticia noticia)
-        {
-            if (ModelState.IsValid)
+            Noticia noticia = new Noticia
             {
-                noticia.NoticiaID = Guid.NewGuid();
-                db.Noticias.Add(noticia);
+                NoticiaID = Guid.NewGuid(),
+                Titulo = string.Empty,
+                HTMLContent = string.Empty,
+                TieneGaleria = BoolTipo.Ninguno,
+                ContadorVisitas = 0,
+                Idioma = IdiomaTipo.Ninguno,
+                FechaPublicacion = DateTime.Now,
+                MeGusta = 0,
+                Status = NoticiaStatus.Ninguno,                
+                FechaCreacion = DateTime.Now,                
+                FechaActualizacion = DateTime.Now,
+                UsuarioActualizacion = User.Identity.Name
+            };
+
+            db.Noticias.Add(noticia);
+
+            try
+            {
                 await db.SaveChangesAsync();
+                return RedirectToAction("Edit", new { id = noticia.NoticiaID });
+            }
+            catch (Exception e)
+            {
+                TempData["MessageBox"] = "Ha ocurrido una excepción: " + e.Message;
                 return RedirectToAction("Index");
             }
+        } // Create
 
-            return View(noticia);
-        }
+        //// POST: Admin/Noticias/Create
+        //// Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
+        //// más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Create([Bind(Include = "NoticiaID,Titulo,Resumen,HTMLContent,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion,FechaActualizacion,UsuarioActualizacion")] Noticia noticia)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        noticia.NoticiaID = Guid.NewGuid();
+        //        db.Noticias.Add(noticia);
+        //        await db.SaveChangesAsync();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View(noticia);
+        //}
 
         // GET: Admin/Noticias/Edit/5
         public async Task<ActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["MessageBox"] = "No se recibió el identificador.";
+                return RedirectToAction("Index");
             }
-            Noticia noticia = await db.Noticias.FindAsync(id);
+            Noticia noticia = await db.Noticias
+                .Include(n => n.Archivos)
+                .Include(n => n.Notas)
+                .FirstOrDefaultAsync(n => n.NoticiaID == id);
             if (noticia == null)
             {
-                return HttpNotFound();
+                TempData["MessageBox"] = "No se encontró el registro.";
+                return RedirectToAction("Index");
+                //return HttpNotFound();
             }
             return View(noticia);
-        }
+        } // Edit
 
         // POST: Admin/Noticias/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "NoticiaID,Titulo,Resumen,HTMLContent,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion,FechaActualizacion,UsuarioActualizacion")] Noticia noticia)
+        public async Task<ActionResult> Edit([Bind(Include = "NoticiaID,Titulo,Resumen,HTMLContent,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion")] Noticia noticia)
         {
+            bool esNuevo = noticia.Status == NoticiaStatus.Ninguno;
+
+            if (esNuevo) {
+                noticia.Status = NoticiaStatus.Nueva;
+            }
+
             if (ModelState.IsValid)
             {
+                noticia.FechaActualizacion = DateTime.Now;
+                noticia.UsuarioActualizacion = User.Identity.Name;
                 db.Entry(noticia).State = EntityState.Modified;
                 await db.SaveChangesAsync();
+                if (esNuevo) { TempData["MessageBox"] = "Registro guardado satisfactoriamente."; }
+                else { TempData["MessageBox"] = "Cambios guardados con exito."; }
+
                 return RedirectToAction("Index");
             }
             return View(noticia);
-        }
+        } // Edit
 
         // GET: Admin/Noticias/Delete/5
         public async Task<ActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
+                TempData["MessageBox"] = "No se recibió el identificador";
+                if (Request.IsAjaxRequest()) return Content("BadRequest");
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Noticia noticia = await db.Noticias.FindAsync(id);
+            Noticia noticia = await db.Noticias
+                .Include(n => n.Archivos)
+                .Include(n => n.Notas)
+                .FirstOrDefaultAsync(n => n.NoticiaID == id);
             if (noticia == null)
             {
+                TempData["MessageBox"] = "No se encontró el registro del identificador";
+                if (Request.IsAjaxRequest()) return Content("HttpNotFound");
                 return HttpNotFound();
             }
+
+            if (Request.IsAjaxRequest())
+            {
+                NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "delete", true);
+                return PartialView("_details", n);
+            }
             return View(noticia);
-        }
+        } // Delete
 
         // POST: Admin/Noticias/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -203,10 +264,57 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
             Noticia noticia = await db.Noticias.FindAsync(id);
-            db.Noticias.Remove(noticia);
+
+            if (noticia.Status == NoticiaStatus.Eliminada)
+            {
+                // HACK: Falta remover los archivos y las notas asociadas a la noticia
+                db.Noticias.Remove(noticia);
+            }
+            else
+            {
+                noticia.Status = NoticiaStatus.Eliminada;
+                noticia.FechaActualizacion = DateTime.Now;
+                noticia.UsuarioActualizacion = User.Identity.Name;
+                db.Entry(noticia).State = EntityState.Modified;
+            }
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
+        } // DeleteConfirmed
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Activar(Guid id)
+        {
+            if (id == null)
+            {
+                TempData["MessageBox"] = "No se recibió el identificador";
+                if (Request.IsAjaxRequest()) return Content("BadRequest");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Noticia noticia = await db.Noticias.FindAsync(id);
+            if (noticia == null)
+            {
+                TempData["MessageBox"] = "No se encontró el registro del identificador";
+                if (Request.IsAjaxRequest()) return Content("HttpNotFound");
+                return HttpNotFound();
+            }
+            noticia.Status = NoticiaStatus.Nueva;
+            noticia.FechaActualizacion = DateTime.Now;
+            noticia.UsuarioActualizacion = User.Identity.Name;
+            db.Entry(noticia).State = EntityState.Modified;
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                TempData["MessageBox"] = "A ocurrido una excepción: " + e.Message;
+                return RedirectToAction("Index");
+            }
+            TempData["MessageBox"] = "La noticia ha sido reactivada.";
+
+            return RedirectToAction("Index");
+        } // Activar
 
         protected override void Dispose(bool disposing)
         {
@@ -216,5 +324,21 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
             base.Dispose(disposing);
         }
+
+        // METODOS PRIVADOS
+
+        private async Task EliminarRegistrosTemporalesAsync(string userName)
+        {
+            var noticias = await (from n in db.Noticias
+                where n.Status == NoticiaStatus.Ninguno
+                && string.Compare(n.UsuarioActualizacion, userName, true) == 0
+                select n).ToListAsync();
+
+            foreach (var noticia in noticias)
+            {
+                db.Noticias.Remove(noticia);
+            }
+            await db.SaveChangesAsync();
+        } // EliminarRegistrosTemporalesAsync
     }
 }

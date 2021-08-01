@@ -223,6 +223,7 @@
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Nota.cs" />
     <Compile Include="Models\Noticia.cs" />
     <Compile Include="Models\NoticiaViewModels.cs" />
     <Compile Include="Models\Opcion.cs" />

@@ -35,6 +35,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
     {
         public DbSet<Archivo> Archivos { get; set; }
         public DbSet<Pagina> Paginas { get; set; }
+        public DbSet<Nota> Notas { get; set; }
         public DbSet<Noticia> Noticias { get; set; }
         public DbSet<Opcion> Opciones { get; set; }
 

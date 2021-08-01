@@ -32,6 +32,18 @@ a {
         text-decoration: underline;
     }
 
+.alert-me-gusta {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.alert-visitas {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

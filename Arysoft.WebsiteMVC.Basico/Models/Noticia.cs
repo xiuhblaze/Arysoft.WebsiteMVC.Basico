@@ -13,18 +13,19 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public Guid NoticiaID { get; set; }
 
         [Display(Name = "Título"), StringLength(200)]
-        [Required(ErrorMessage = "Es necesario el título de la noticia")]
+        //[Required(ErrorMessage = "Es necesario el título de la noticia")]
         public string Titulo { get; set; }
 
         [StringLength(1000)]
         public string Resumen { get; set; }
 
-        [Required(ErrorMessage = "Es necesario el contenido de la noticia")]
+        //[Required(ErrorMessage = "Es necesario el contenido de la noticia")]
         public string HTMLContent { get; set; }
 
         [StringLength(150)]
         public string Autor { get; set; }
 
+        [Display(Name = "Tiene galeria")]
         public BoolTipo TieneGaleria { get; set; }
 
         public int ContadorVisitas { get; set; }
@@ -54,12 +55,16 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaActualizacion { get; set; }
 
+        [Display(Name = "Actualizado por")]
         public string UsuarioActualizacion { get; set; }
 
         // RELACIONES
 
         [ForeignKey("PropietarioID")]
         public ICollection<Archivo> Archivos { get; set; }
+
+        [ForeignKey("PropietarioID")]
+        public ICollection<Nota> Notas { get; set; }
     }
 
     public enum NoticiaStatus
