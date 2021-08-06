@@ -27,8 +27,7 @@ namespace Arysoft.WebsiteMVC.Basico
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/jasny-bootstrap.min.css",
-                      "~/Content/site.css"));
+                      "~/Content/jasny-bootstrap.min.css"));
         }
     }
 }

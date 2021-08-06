@@ -200,7 +200,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 return RedirectToAction("Index");
                 //return HttpNotFound();
             }
-            return View(noticia);
+            return View(new NoticiaEditViewModel(noticia));
         } // Edit
 
         // POST: Admin/Noticias/Edit/5
@@ -208,8 +208,10 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "NoticiaID,Titulo,Resumen,HTMLContent,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion")] Noticia noticia)
+        public async Task<ActionResult> Edit([Bind(Include = "NoticiaID,Titulo,__resumen,__content,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion")] NoticiaEditViewModel noticiaVM)
         {
+            Noticia noticia = noticiaVM.ObtenerNoticia();
+
             bool esNuevo = noticia.Status == NoticiaStatus.Ninguno;
 
             if (esNuevo) {

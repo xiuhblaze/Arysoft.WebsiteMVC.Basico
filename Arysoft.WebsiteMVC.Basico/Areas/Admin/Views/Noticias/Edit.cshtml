@@ -1,5 +1,6 @@
-﻿@model Arysoft.WebsiteMVC.Basico.Models.Noticia
-@using Arysoft.WebsiteMVC.Basico.Models;
+﻿@using Arysoft.WebsiteMVC.Basico.Models;
+
+@model NoticiaEditViewModel
 
 @{
     bool esNueva = Model.Status == NoticiaStatus.Ninguno;
@@ -50,32 +51,40 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         @Html.HiddenFor(model => model.NoticiaID)
                         @Html.HiddenFor(model => model.ContadorVisitas)
+                        @Html.HiddenFor(model => model.ImagenArchivo)
                         @Html.HiddenFor(model => model.MeGusta)
+                        @Html.HiddenFor(model => model.Status)
                         @Html.HiddenFor(model => model.FechaCreacion)
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Titulo)
-                            @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control" } })
+                        <div class="form-group mb-0">
+                            @*@Html.LabelFor(model => model.Titulo)*@
+                            @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control noticia-titulo p-0", @title = "Título de la noticia", @placeholder = "Título de la noticia" } })
                             @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(model => model.Resumen)
-                            @Html.EditorFor(model => model.Resumen, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Resumen, "", new { @class = "text-danger" })
+                            @*@Html.LabelFor(model => model.Resumen)*@
+                            @Html.EditorFor(model => model.__resumen, new { htmlAttributes = new { @class = "form-control noticia-resumen p-0", @placeholder = "Resumen" } })
+                            @Html.ValidationMessageFor(model => model.__resumen, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(model => model.HTMLContent)
-                            @Html.EditorFor(model => model.HTMLContent, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.HTMLContent, "", new { @class = "text-danger" })
+                            @*@Html.LabelFor(model => model.HTMLContent)*@
+                            @Html.EditorFor(model => model.__content, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.__content, "", new { @class = "text-danger" })                            
                         </div>
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Autor)
-                            @Html.EditorFor(model => model.Autor, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Autor, "", new { @class = "text-danger" })
+                        <div class="form-row">
+                            <div class="col"></div>
+                            <div class="col">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(model => model.Autor)*@
+                                    @Html.EditorFor(model => model.Autor, new { htmlAttributes = new { @class = "form-control", @placeholder = "Autor" } })
+                                    @Html.ValidationMessageFor(model => model.Autor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -115,7 +124,7 @@
                         </div>
                         <small class="form-text text-muted">
                             Seleccione de su equipo, la imagen principal a subir en la noticia, se recomienda
-                            que sea de una resolución de 1170x380 pixeles para mantener una uniformidad en las 
+                            que sea de una resolución de 1170x380 pixeles para mantener una uniformidad en las
                             imágenes de las noticias.
                         </small>
                     </div>
@@ -135,7 +144,7 @@
                         @Html.ValidationMessageFor(model => model.Idioma, "", new { @class = "text-danger" })
                         <small id="IdiomaHelpBlock" class="form-text text-muted">
                             Establesca el idioma en el que se esta redactando el contenido, esto sirve para
-                            clasificar la noticia, para la lectura correcta del visitante en el idioma que 
+                            clasificar la noticia, para la lectura correcta del visitante en el idioma que
                             seleccione.
                         </small>
                     </div>
@@ -168,10 +177,40 @@
                 <!-- ARCHIVOS -->
                 <div class="tab-pane fade" id="archivos" role="tabpanel" aria-labelledby="archivos-tab">
                     <h4 class="mt-3">Archivos</h4>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <div class="custom-file mr-2">
+                                    <input type="file" class="custom-file-input" id="Archivo" />
+                                    <label class="custom-file-label" for="Archivo">Incluir archivo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="custom-control custom-switch mt-2" title="Incluir en galeria">
+                                <input type="checkbox" class="custom-control-input" id="IncluirGaleria" />
+                                <label class="custom-control-label" for="IncluirGaleria"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-outline-primary"><i class="bi-upload"></i></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <small class="form-text text-muted mb-2">
+                                Puede incluir archivos a la noticia ya sean imagenes o documentos, puede indicar si
+                                la imagen pertenece a una galeria dentro de la noticia.
+                                Los formatos permitidos son (.jpg, .png, .pdf, docx y zip).
+                            </small>
+                        </div>
+                    </div>
                     <ul class="list-group">
                         <li class="list-group-item"><i class="bi-file"></i> An item</li>
-                        <li class="list-group-item"><i class="bi-file"></i> A second item</li>
-                        <li class="list-group-item"><i class="bi-image"></i> A third item</li>
+                        <li class="list-group-item"><i class="bi-file"></i> /Archivos/Noticias/5632FFC3/Nombre imagen.jpg</li>
+                        <li class="list-group-item">
+                            <i class="bi-image"></i> A third item
+                        </li>
                     </ul>
                 </div>
 
@@ -198,7 +237,7 @@
                     </div>
                 </div>
             </div>
-        </div>            
+        </div>
     </div>
     <div class="row">
         <div class="col-12">
@@ -218,4 +257,15 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+
+    <script>
+
+        CKEDITOR.replace('__content', {
+            height: 500,
+            resize_minHeight: 300,
+            resize_maxHeight: 800
+        });
+    </script>
 }

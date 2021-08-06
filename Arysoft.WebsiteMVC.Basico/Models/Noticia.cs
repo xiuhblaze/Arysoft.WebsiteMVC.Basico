@@ -17,6 +17,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public string Titulo { get; set; }
 
         [StringLength(1000)]
+        [DataType(DataType.MultilineText)]
         public string Resumen { get; set; }
 
         //[Required(ErrorMessage = "Es necesario el contenido de la noticia")]
