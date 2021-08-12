@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using Arysoft.WebsiteMVC.Basico.Models;
@@ -21,7 +22,9 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         public async Task<ActionResult> Index(string buscar, string filtro, string orden, string status, int? pagina)
         {
             NoticiaStatus myStatus = (NoticiaStatus)(string.IsNullOrEmpty(status) ? NoticiaStatus.Ninguno : Enum.Parse(typeof(NoticiaStatus), status));
-            
+
+            ViewBag.MenuActive = "noticias";
+
             ViewBag.Orden = orden;
             ViewBag.OrdenNombre = string.IsNullOrEmpty(orden) ? "titulo_desc" : "";
             ViewBag.OrdenAutor = orden == "autor" ? "autor_desc" : "autor";
@@ -317,6 +320,58 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         } // Activar
+
+        [HttpPost]
+        public async Task<ActionResult> AgregarImagenPrincipal(Guid id)
+        {
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    // Get all files from Request object
+                    HttpFileCollectionBase files = Request.Files;
+                    string fname = id.ToString();
+                    string fextension = string.Empty;
+
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        HttpPostedFileBase file = files[i];
+
+                        //// Checking for Internet Explorer
+                        //if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        //{
+                        //    string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                        //    fname = testfiles[testfiles.Length - 1];
+                        //}
+                        //else 
+                        //{
+                        //    fname = file.FileName;
+                        //}
+                        fextension = Path.GetExtension(file.FileName).ToLower();
+
+                        // Get the complete folder path and store the file inside it.
+                        fname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), fname + fextension);
+                        file.SaveAs(fname);
+                    }
+
+                    // HACK: Actualizar el nombre del archivo en la base de datos
+
+                    return Json("File uploaded successfully!");
+                    //for (int i = 0; i < files.Count; i++)
+                    //{
+                    //    HttpPostedFileBase file = files[i];
+                    //}
+                }
+                catch (Exception e)
+                {
+                    return Json("A ocurrido una excepción: " + e.Message);
+                }
+            }
+            else
+            {
+                return Json("No se seleccionó ningun archivo.");
+            }
+        } // AgregarImagenPrincipal
 
         protected override void Dispose(bool disposing)
         {

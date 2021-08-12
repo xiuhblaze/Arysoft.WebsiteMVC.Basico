@@ -11,6 +11,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         // GET: Admin/Admin
         public ActionResult Index()
         {
+            ViewBag.MenuActive = "dashboard";
+
             return View();
         }
     }

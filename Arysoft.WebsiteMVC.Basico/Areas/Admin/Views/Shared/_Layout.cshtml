@@ -65,25 +65,37 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/Admin">
+                            <a class="nav-link @(ViewBag.MenuActive == "dashboard" ? "active" : "")" href="/Admin">
                                 <i class="bi-house-door mr-2"></i>
                                 Dashboard <span class="sr-only">(current)</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="Paginas">
-                                <i class="bi-file-earmark mr-2"></i>
+                            <a class="nav-link @(ViewBag.MenuActive == "archivos" ? "active" : "")" href="/Admin/Archivos">
+                                <i class="bi-files mr-2"></i>
+                                Archivos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewBag.MenuActive == "paginas" ? "active" : "")" href="/Admin/Paginas">
+                                <i class="bi-file-earmark-richtext mr-2"></i>
                                 Páginas
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/Admin/Noticias">
+                            <a class="nav-link @(ViewBag.MenuActive == "noticias" ? "active" : "")" href="/Admin/Noticias">
                                 <i class="bi-newspaper mr-2"></i>
                                 Noticias
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="Options">
+                            <a class="nav-link @(ViewBag.MenuActive == "notas" ? "active" : "")" href="/Admin/Notas">
+                                <i class="bi-file-text mr-2"></i>
+                                Notas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewBag.MenuActive == "opciones" ? "active" : "")" href="/Admin/Opciones">
                                 <i class="bi-gear mr-2"></i>
                                 Opciones
                             </a>

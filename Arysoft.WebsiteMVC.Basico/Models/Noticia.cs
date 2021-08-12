@@ -58,6 +58,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public DateTime FechaActualizacion { get; set; }
 
         [Display(Name = "Actualizado por")]
+        [StringLength(150)]
         public string UsuarioActualizacion { get; set; }
 
         // RELACIONES

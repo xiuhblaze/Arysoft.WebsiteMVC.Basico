@@ -117,10 +117,10 @@
                         <label class="mr-2">Imagen Principal</label>
                         <div class="input-group mt-2">
                             <div class="custom-file mr-2">
-                                <input type="file" class="custom-file-input" id="ImagenArchivo" />
-                                <label class="custom-file-label" for="ImagenArchivo">Selecciona una imagen</label>
+                                <input type="file" class="custom-file-input" id="imagenPrincipalFileUpload" />
+                                <label class="custom-file-label" for="imagenPrincipalFileUpload">Selecciona una imagen</label>
                             </div>
-                            <button type="button" class="btn btn-outline-primary"><i class="bi-upload"></i></button>
+                            <button type="button" id="subirImagenPrincipalButton" class="btn btn-outline-primary"><i class="bi-upload"></i></button>
                         </div>
                         <small class="form-text text-muted">
                             Seleccione de su equipo, la imagen principal a subir en la noticia, se recomienda
@@ -267,5 +267,61 @@
             resize_minHeight: 300,
             resize_maxHeight: 800
         });
+
+        $(document).ready(function () {
+
+            // IMAGEN PRINCIPAL
+
+            $('#subirImagenPrincipalButton').attr('disabled', true);
+
+            $('#imagenPrincipalFileUpload').change(function () {
+                if ($('#imagenPrincipalFileUpload').val().length != 0) {
+                    $('#subirImagenPrincipalButton').attr('disabled', false);
+                } else {
+                    $('#subirImagenPrincipalButton').attr('disabled', true);
+                }
+            }); // imagenPrincipalFileUpload.change
+
+            $('#subirImagenPrincipalButton').click(function () { // https://www.c-sharpcorner.com/UploadFile/manas1/upload-files-through-jquery-ajax-in-Asp-Net-mvc/
+                //alert('subirImagenPrincipalButton');
+                if (window.FormData !== undefined) { // checking whether FormData is available in browser
+
+                    var fileUpload = $('#imagenPrincipalFileUpload').get(0);
+                    var files = fileUpload.files;
+                    var url = '@Url.Action("AgregarImagenPrincipal", "Noticias")/@Model.NoticiaID';
+
+                    // Create FormData object
+                    var fileData = new FormData();
+
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+                        fileData.append(files[i].name, files[i]);
+                    }
+
+                    // Adding one more key to FormData object
+                    fileData.append('username', 'xBlaze');
+
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (result) {
+                            // HACK: Si es correcto, obtener el nombre del archivo y poner la imagen en el encabezado de la noticia, asi como en el objeto hidden ImagenPrincipal
+                            alert(result);
+                            $('#imagenPrincipalFileUpload').fileinput('clear');
+                            $('#subirImagenPrincipalButton').attr('disabled', true);
+                        },
+                        error: function (err) {
+                            alert(err.statusText);
+                        }
+                    });
+                }
+                else {
+                    alert("FormData is not supported");
+                }
+            }); // subirImagenPrincipalButton
+        }); // document.ready
     </script>
 }

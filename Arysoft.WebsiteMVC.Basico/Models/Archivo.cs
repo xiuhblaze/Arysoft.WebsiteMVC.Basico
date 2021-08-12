@@ -13,6 +13,8 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public Guid ArchivoID { get; set; }        
         public Guid PropietarioID { get; set; }
 
+        public int Indice { get; set; }
+
         [StringLength(255)]
         public string Nombre { get; set; }
 
@@ -22,11 +24,13 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [StringLength(200)]
         public string Tags { get; set; }
 
+        public BoolTipo EnGaleria { get; set; }
+
         [Display(Name = "Estatus")]
         public StatusTipo Status { get; set; }
 
         [DataType(DataType.DateTime), Display(Name = "Alta"), DisplayFormat(DataFormatString = "{0:d}")]
-        public DateTime FechaAlta { get; set; }
+        public DateTime FechaCreacion { get; set; }
 
         [DataType(DataType.DateTime), Display(Name = "Actualización"), DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime FechaActualizacion { get; set; }

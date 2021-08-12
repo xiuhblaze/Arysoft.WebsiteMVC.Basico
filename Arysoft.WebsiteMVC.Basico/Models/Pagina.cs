@@ -69,6 +69,8 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaActualizacion { get; set; }
 
+        [StringLength(150)]
+        [Display(Name = "Actualizado por")]
         public string UsuarioActualizacion { get; set; }
 
         // VIRTUAL
