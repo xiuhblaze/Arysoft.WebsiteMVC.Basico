@@ -203,6 +203,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 return RedirectToAction("Index");
                 //return HttpNotFound();
             }
+            if (noticia.Status == NoticiaStatus.Eliminada)
+            {
+                TempData["MessageBox"] = "La noticia ha sido eliminada.";
+                return RedirectToAction("Index");
+            }
+
             return View(new NoticiaEditViewModel(noticia));
         } // Edit
 
@@ -273,6 +279,10 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             if (noticia.Status == NoticiaStatus.Eliminada)
             {
                 // HACK: Falta remover los archivos y las notas asociadas a la noticia
+
+                // Eliminando la carpeta de archivos de la noticia
+                string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), noticia.NoticiaID.ToString());
+                if (Directory.Exists(dname)) { Directory.Delete(dname, true); }
                 db.Noticias.Remove(noticia);
             }
             else
@@ -322,7 +332,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         } // Activar
 
         [HttpPost]
-        public async Task<ActionResult> AgregarImagenPrincipal(Guid id)
+        public ActionResult AgregarImagenPrincipal(Guid id)
         {
             if (Request.Files.Count > 0)
             {
@@ -330,6 +340,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 {
                     // Get all files from Request object
                     HttpFileCollectionBase files = Request.Files;
+                    string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), id.ToString());
                     string fname = id.ToString();
                     string fextension = string.Empty;
 
@@ -337,39 +348,35 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     {
                         HttpPostedFileBase file = files[i];
 
-                        //// Checking for Internet Explorer
-                        //if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
-                        //{
-                        //    string[] testfiles = file.FileName.Split(new char[] { '\\' });
-                        //    fname = testfiles[testfiles.Length - 1];
-                        //}
-                        //else 
-                        //{
-                        //    fname = file.FileName;
-                        //}
                         fextension = Path.GetExtension(file.FileName).ToLower();
-
-                        // Get the complete folder path and store the file inside it.
-                        fname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), fname + fextension);
-                        file.SaveAs(fname);
+                        // Get the complete folder path and store the file inside it.                        
+                        fname += fextension;
+                        if (!Directory.Exists(dname)) { Directory.CreateDirectory(dname); }
+                        file.SaveAs(Path.Combine(dname, fname));
                     }
 
-                    // HACK: Actualizar el nombre del archivo en la base de datos
-
-                    return Json("File uploaded successfully!");
-                    //for (int i = 0; i < files.Count; i++)
-                    //{
-                    //    HttpPostedFileBase file = files[i];
-                    //}
+                    return Json(new { 
+                        status = "success",
+                        message = "File Uploaded Successfully!",
+                        filename = fname
+                    });
                 }
                 catch (Exception e)
                 {
-                    return Json("A ocurrido una excepción: " + e.Message);
+                    return Json(new {
+                        status = "exception",
+                        message = "A ocurrido una excepción: " + e.Message,
+                        filename = ""
+                    });
                 }
             }
             else
             {
-                return Json("No se seleccionó ningun archivo.");
+                return Json(new {
+                    status = "exception",
+                    message = "No se seleccionó ningún archivo.",
+                    filename = ""
+                });
             }
         } // AgregarImagenPrincipal
 

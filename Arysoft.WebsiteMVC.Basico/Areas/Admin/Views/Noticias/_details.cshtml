@@ -9,7 +9,7 @@
 
     if (!string.IsNullOrEmpty(Model.ImagenArchivo))
     {
-        imagenPrincipalTag = "<img src='/Archivos/Noticias/" + Model.ImagenArchivo + "' class='card-img-top' alt='" + Html.DisplayNameFor(model => model.ImagenArchivo) + "' />";
+        imagenPrincipalTag = "<img src='/Archivos/Noticias/" + Model.NoticiaID.ToString() + "/" + Model.ImagenArchivo + "' class='card-img-top' alt='" + Html.DisplayNameFor(model => model.ImagenArchivo) + "' />";
     }
 
     switch (Model.Status)
@@ -227,12 +227,24 @@
             @switch (Model.Status)
             {
                 case NoticiaStatus.Eliminada:
-                    <form action="/Admin/Noticias/Activar/@Model.NoticiaID" method="post" style="float: right; margin-left: .5em;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-success">
-                            <i class='bi-arrow-clockwise'></i> Reactivar
-                        </button>
-                    </form>
+                    if (Model.Origen == "details")
+                    {
+                        <form action="/Admin/Noticias/Activar/@Model.NoticiaID" method="post" style="float: right; margin-left: .5em;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success">
+                                <i class='bi-arrow-clockwise'></i> Reactivar
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form action="/Admin/Noticias/Delete/@Model.NoticiaID" method="post" style="float: right; margin-left: .5em;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Esta acción ELIMINARA DEFINITIVAMENTE el registro y no se puede deshacer. ¿Esta seguro?');">
+                                <i class='bi-x-square'></i> Eliminar
+                            </button>
+                        </form>
+                    }
                     break;
                 default:
                     if (Model.Origen == "details")

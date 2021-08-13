@@ -61,11 +61,15 @@
         string classStatusIcon = "";
         string classGaleriaIcon = "<i class='bi-image text-muted icon' title='Galeria deshabilitada'></i>";
         string classArchivosIcon = "<i class='bi-paperclip text-muted icon' title='Sin archivos'></i>";
+        string classNotasIcon = "<i class='bi-square-fill text-muted icon' title='Sin notas'></i>";
         string classMeGustaBadge = "badge badge-primary";
         string classVisitasBadge = "badge badge-success";
 
         //if(!string.IsNullOrEmpty(item.ImagenArchivo))
-        imageTag = "<img src='/Archivos/Noticias/leelee sobieski.jpg' class='card-img-top' alt='Imagen Principal' style='cursor: pointer' onclick='getDetails(\"" + item.NoticiaID + "\")' />";
+        if (!string.IsNullOrEmpty(item.ImagenArchivo))
+        {
+            imageTag = "<img src='/Archivos/Noticias/" + item.NoticiaID.ToString() + "/" + item.ImagenArchivo + "' class='card-img-top' alt='Imagen Principal' style='cursor: pointer' onclick='getDetails(\"" + item.NoticiaID + "\")' />";
+        }
 
         switch (item.Status)
         {
@@ -101,14 +105,22 @@
             classArchivosIcon = "<i class='bi-paperclip text-info icon' title='" + item.ContadorArchivos + " archivo(s)'></i>";
         }
 
+        if (item.ContadorNotas > 0)
+        {
+            classNotasIcon = "<i class='bi-square-fill text-warning icon' title='" + item.ContadorNotas + " nota(s)'></i>";
+        }
+
         <div class="col mb-3">
             <div class="@classCard">
                 @Html.Raw(imageTag)
                 <div class="card-body" style="cursor: pointer" onclick="getDetails('@item.NoticiaID')">
-                    <h5 class="card-title">
+                    <p class="card-text mb-0">
                         @Html.Raw(classStatusIcon)
                         @Html.Raw(classGaleriaIcon)
+                        @Html.Raw(classNotasIcon)
                         @Html.Raw(classArchivosIcon)
+                    </p>
+                    <h5 class="card-title">
                         @Html.DisplayFor(modelItem => item.Titulo)
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted" title="Fecha de publicación">
@@ -129,10 +141,14 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-right">
-                        @Html.Raw(
-                            @Html.ActionLink("[editar]", "Edit", new { id = item.NoticiaID }, new { @class = "card-link" }).ToHtmlString()
-                                .Replace("[editar]", "<i class='bi-pencil-square' style='font-size: 1.2rem;'></i>")
-                        )
+                        @if (item.Status != NoticiaStatus.Eliminada)
+                        {
+                            @Html.Raw(
+                                @Html.ActionLink("[editar]", "Edit", new { id = item.NoticiaID }, new { @class = "card-link" }).ToHtmlString()
+                                    .Replace("[editar]", "<i class='bi-pencil-square' style='font-size: 1.2rem;'></i>")
+                            );
+                        }
+
                         <a href="#" onclick="getDetails('@item.NoticiaID'); return false;" class="card-link">
                             <i class='bi-info-square' style='font-size: 1.2rem;' title="Detalles"></i>
                         </a>

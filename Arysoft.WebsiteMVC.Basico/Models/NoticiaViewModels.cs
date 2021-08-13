@@ -30,11 +30,16 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaPublicacion { get; set; }
 
+        [StringLength(255)]
+        public string ImagenArchivo { get; set; }
+
         public int MeGusta { get; set; }
 
         public NoticiaStatus Status { get; set; }
 
         public int ContadorArchivos { get; set; }
+
+        public int ContadorNotas { get; set; }
 
         public NoticiaIndexListViewModel(Noticia noticia)
         {
@@ -46,9 +51,11 @@ namespace Arysoft.WebsiteMVC.Basico.Models
             this.ContadorVisitas = noticia.ContadorVisitas;
             this.Idioma = noticia.Idioma;
             this.FechaPublicacion = noticia.FechaPublicacion;
+            this.ImagenArchivo = noticia.ImagenArchivo;
             this.MeGusta = noticia.MeGusta;
             this.Status = noticia.Status;
             this.ContadorArchivos = noticia.Archivos != null ? noticia.Archivos.Count : 0;
+            this.ContadorNotas = noticia.Notas != null ? noticia.Notas.Count : 0;
         }
     } // NoticiaIndexListViewModel
 
