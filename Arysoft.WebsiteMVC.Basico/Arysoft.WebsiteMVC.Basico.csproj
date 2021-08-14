@@ -219,6 +219,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -310,6 +311,7 @@
     <Content Include="Areas\Admin\Views\Opciones\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Opciones\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Opciones\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Noticias\_archivosNoticia.cshtml" />
     <None Include="Properties\PublishProfiles\Alpha.pubxml" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />

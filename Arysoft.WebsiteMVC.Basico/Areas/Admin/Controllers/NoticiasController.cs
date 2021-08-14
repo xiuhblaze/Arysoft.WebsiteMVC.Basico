@@ -380,6 +380,86 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
         } // AgregarImagenPrincipal
 
+        public ActionResult AgregarArchivos(Guid id) 
+        {
+            if (Request.Files.Count > 0)
+            {
+                try 
+                {
+                    HttpFileCollectionBase files = Request.Files;
+                    string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), id.ToString());
+                    string fname = string.Empty;
+                    string fextension = string.Empty;
+
+                    BoolTipo incluirGaleria = Request.Params["incluirGaleria"] == "true" ? BoolTipo.Si : BoolTipo.No;
+                    string[] allowedExtensions = new string[] { ".jpg", ".gif", ".png", ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
+                    string[] imagesExtensions = new string[] { ".jpg", ".gif", ".png" };
+
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        BoolTipo enGaleria = BoolTipo.No;
+                        HttpPostedFileBase file = files[i];
+
+                        fname = Path.GetFileNameWithoutExtension(file.FileName);
+                        fname = fname.ToSingleSpaces().CleanInvalidFileNameChars();                        
+                        fextension = Path.GetExtension(file.FileName).ToLower();
+                        // HACK: Falta utilizar allowedExtensions
+                        if (Array.Exists(imagesExtensions, e => e == fextension) && incluirGaleria == BoolTipo.Si)
+                        {
+                            enGaleria = BoolTipo.Si;
+                        }
+                        if (!Directory.Exists(dname)) { Directory.CreateDirectory(dname); }
+                        file.SaveAs(Path.Combine(dname, fname + fextension));
+
+                        Archivo miArchivo = new Archivo() { 
+                            ArchivoID = Guid.NewGuid(),
+                            PropietarioID = id,
+                            Indice = 0,
+                            Nombre = fname + fextension,
+                            EnGaleria = enGaleria,
+                            Status = StatusTipo.Activo,
+                            FechaCreacion = DateTime.Now,
+                            FechaActualizacion = DateTime.Now,
+                            UsuarioActualizacion = User.Identity.Name
+                        };
+                        db.Archivos.Add(miArchivo);
+                    }
+
+                    db.SaveChanges();
+
+                    if (Request.IsAjaxRequest())
+                    {
+                        var archivos = from a in db.Archivos
+                                      where a.PropietarioID == id
+                                      orderby a.Nombre
+                                      select a;
+                        return PartialView("_archivosNoticia", archivos);
+                    }
+                    
+                    return Json(new { 
+                        status = "unknow",
+                        message = "Esto no deberia llegar hasta aqui (por ahora)."
+                    });
+                }
+                catch (Exception e)
+                {
+                    return Json(new
+                    {
+                        status = "exception",
+                        message = "A ocurrido una excepción: " + e.Message
+                    });
+                }
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = "nofile",
+                    message = "No se recibió ningun archivo."
+                });
+            }
+        } // AgregarArchivos
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

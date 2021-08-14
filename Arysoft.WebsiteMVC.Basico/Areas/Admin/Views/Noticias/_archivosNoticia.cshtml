@@ -1,0 +1,52 @@
+﻿@using Arysoft.WebsiteMVC.Basico.Models;
+
+@model IEnumerable<Archivo>
+
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-info" role="alert">
+        <h5 class="alert-heading">Sin archivos</h5>
+        <p>Aun no cuenta con archivos cargados a la noticia, puede incluirlos en el formulario superior.</p>
+    </div>
+}
+else
+{
+    <div style="max-height: 800px; overflow-y: scroll;">
+        <ul class="list-group">
+            @foreach (Archivo archivo in Model)
+            {
+                <li class="list-group-item list-group-item-action">
+                    <div class="media">
+                        <img src="..." class="mr-3" alt="...">
+                        <div class="media-body">
+                            <h5 class="mt-0">@archivo.Nombre</h5>
+                            <p>@archivo.Descripcion</p>
+                        </div>
+                    </div>
+                </li>
+            }
+
+            @*<li class="list-group-item disabled" aria-disabled="true">
+                <div class="media">
+                    <img src="..." class="mr-3" alt="...">
+                    <div class="media-body">
+                        <h5 class="mt-0">Media heading</h5>
+                        <p>Will you do the same for me? It's time to face the music I'm no longer your muse.</p>
+                    </div>
+                </div>
+            </li>
+
+            <li class="list-group-item list-group-item-action">
+                <div class="media">
+                    <img src="..." class="mr-3" alt="...">
+                    <div class="media-body">
+                        <h5 class="mt-0">Media heading</h5>
+                        <p>Will you do the same for me? It's time to face the music I'm no longer your muse. Heard it's beautiful, be the judge and my girls gonna take a vote.</p>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">A fourth item</li>
+            <li class="list-group-item">And a fifth one</li>*@
+        </ul>
+    </div>
+}

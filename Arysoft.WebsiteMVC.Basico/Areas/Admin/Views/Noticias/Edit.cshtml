@@ -200,19 +200,19 @@
                         <div class="col-md-8">
                             <div class="input-group">
                                 <div class="custom-file mr-2">
-                                    <input type="file" class="custom-file-input" id="Archivo" />
-                                    <label class="custom-file-label" for="Archivo">Incluir archivo</label>
+                                    <input type="file" class="custom-file-input" id="archivosFileUpload" multiple />
+                                    <label class="custom-file-label" for="archivosFileUpload">Incluir archivo</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="custom-control custom-switch mt-2" title="Incluir en galeria">
-                                <input type="checkbox" class="custom-control-input" id="IncluirGaleria" />
-                                <label class="custom-control-label" for="IncluirGaleria"></label>
+                                <input type="checkbox" class="custom-control-input" id="incluirGaleriaCheckbox" />
+                                <label class="custom-control-label" for="incluirGaleriaCheckbox"></label>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-outline-primary"><i class="bi-upload"></i></button>
+                            <button type="button" id="subirArchivosButton" class="btn btn-outline-primary"><i class="bi-upload"></i></button>
                         </div>
                     </div>
                     <div class="row">
@@ -224,13 +224,9 @@
                             </small>
                         </div>
                     </div>
-                    <ul class="list-group">
-                        <li class="list-group-item"><i class="bi-file"></i> An item</li>
-                        <li class="list-group-item"><i class="bi-file"></i> /Archivos/Noticias/5632FFC3/Nombre imagen.jpg</li>
-                        <li class="list-group-item">
-                            <i class="bi-image"></i> A third item
-                        </li>
-                    </ul>
+                    <div id="archivosNoticiaDiv">
+                        @Html.Partial("_archivosNoticia", Model.Archivos)
+                    </div>
                 </div>
 
                 <!-- NOTAS -->
@@ -347,7 +343,7 @@
                     });
                 }
                 else {
-                    alert("FormData is not supported");
+                    alert("FormData is not supported.");
                 }
             }); // subirImagenPrincipalButton
 
@@ -369,6 +365,64 @@
             $('input[type=radio][name=status]').change(function () {
                 $('#Status').val(this.value);
             });
+
+            // ARCHIVOS
+
+            $('#subirArchivosButton').attr('disabled', true);
+            $('#archivosFileUpload').change(function () {
+                if ($('#archivosFileUpload').val().length != 0) {
+                    $('#subirArchivosButton').attr('disabled', false);
+                } else {
+                    $('#subirArchivosButton').attr('disabled', true);
+                }
+            });
+
+            $('#subirArchivosButton').click(function () {
+
+                if (window.FormData !== undefined) {
+                    var fileUpload = $('#archivosFileUpload').get(0);
+                    var files = fileUpload.files;
+                    var url = '@Url.Action("AgregarArchivos", "Noticias")/@Model.NoticiaID';
+                    var incluirGaleria = $('#incluirGaleriaCheckbox').is(':checked');
+                    var fileData = new FormData();
+
+                    for (var i = 0; i < files.length; i++) {
+                        fileData.append(files[i].name, files[i]);
+                    }
+
+                    fileData.append('incluirGaleria', incluirGaleria);
+                    fileData.append('username', 'xBlaze');
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        contentType: false,
+                        processData: false,
+                        data: fileData,
+                        success: function (result) {
+                            if (result.status === undefined) {
+                                $('#archivosNoticiaDiv').html(result);
+                            } else {
+                                switch (result.status) {
+                                    case "exception":
+                                        alert(result.message);
+                                        break;
+                                    case "notfile":
+                                        alert(result.message);
+                                        break;
+                                    default:
+                                        console.log("SubirArchivosButton (switch default): " + result);
+                                }
+                            }
+                        },
+                        error: function (err) {
+                            alert(err.statusText);
+                        }
+                    });
+                } else {
+                    alert("FormData is not supported.");
+                }
+            }); // subirArchivosButton.click
 
         }); // document.ready
     </script>
