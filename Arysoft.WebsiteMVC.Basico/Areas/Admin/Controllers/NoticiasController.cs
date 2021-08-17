@@ -122,14 +122,14 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 if (Request.IsAjaxRequest()) return Content("HttpNotFound");
                 return HttpNotFound();
             }
-            
+
             if (Request.IsAjaxRequest())
             {
                 NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "details", true);
                 return PartialView("_details", n);
             }
             return View(noticia);
-         } // Details
+        } // Details
 
         // GET: Admin/Noticias/Create
         public async Task<ActionResult> Create()
@@ -146,8 +146,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 Idioma = IdiomaTipo.Ninguno,
                 FechaPublicacion = DateTime.Now,
                 MeGusta = 0,
-                Status = NoticiaStatus.Ninguno,                
-                FechaCreacion = DateTime.Now,                
+                Status = NoticiaStatus.Ninguno,
+                FechaCreacion = DateTime.Now,
                 FechaActualizacion = DateTime.Now,
                 UsuarioActualizacion = User.Identity.Name
             };
@@ -355,7 +355,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                         file.SaveAs(Path.Combine(dname, fname));
                     }
 
-                    return Json(new { 
+                    return Json(new {
                         status = "success",
                         message = "File Uploaded Successfully!",
                         filename = fname
@@ -380,11 +380,11 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
         } // AgregarImagenPrincipal
 
-        public ActionResult AgregarArchivos(Guid id) 
+        public ActionResult AgregarArchivos(Guid id)
         {
             if (Request.Files.Count > 0)
             {
-                try 
+                try
                 {
                     HttpFileCollectionBase files = Request.Files;
                     string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), id.ToString());
@@ -401,7 +401,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                         HttpPostedFileBase file = files[i];
 
                         fname = Path.GetFileNameWithoutExtension(file.FileName);
-                        fname = fname.ToSingleSpaces().CleanInvalidFileNameChars();                        
+                        fname = fname.ToSingleSpaces().CleanInvalidFileNameChars();
                         fextension = Path.GetExtension(file.FileName).ToLower();
                         // HACK: Falta utilizar allowedExtensions
                         if (Array.Exists(imagesExtensions, e => e == fextension) && incluirGaleria == BoolTipo.Si)
@@ -411,7 +411,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                         if (!Directory.Exists(dname)) { Directory.CreateDirectory(dname); }
                         file.SaveAs(Path.Combine(dname, fname + fextension));
 
-                        Archivo miArchivo = new Archivo() { 
+                        Archivo miArchivo = new Archivo() {
                             ArchivoID = Guid.NewGuid(),
                             PropietarioID = id,
                             Indice = 0,
@@ -430,13 +430,13 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     if (Request.IsAjaxRequest())
                     {
                         var archivos = from a in db.Archivos
-                                      where a.PropietarioID == id
-                                      orderby a.Nombre
-                                      select a;
+                                       where a.PropietarioID == id
+                                       orderby a.Nombre
+                                       select a;
                         return PartialView("_archivosNoticia", archivos);
                     }
-                    
-                    return Json(new { 
+
+                    return Json(new {
                         status = "unknow",
                         message = "Esto no deberia llegar hasta aqui (por ahora)."
                     });
@@ -459,6 +459,48 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 });
             }
         } // AgregarArchivos
+
+        [HttpPost]
+        public ActionResult EliminarArchivo(Guid id) 
+        {
+            var archivo = db.Archivos.Find(id);
+
+            if (archivo == null) 
+            {
+                return Json(new { 
+                    status = "HttpNotFound",
+                    message = "No se encontró el registro del archivo."
+                });
+            }
+
+            Guid propietarioID = archivo.PropietarioID;
+            string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), propietarioID.ToString());
+            string fname = archivo.Nombre;
+            string path = Path.Combine(dname, fname);
+
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+
+            db.Archivos.Remove(archivo);
+            db.SaveChanges();
+
+            if (Request.IsAjaxRequest())
+            {
+                var archivos = from a in db.Archivos
+                               where a.PropietarioID == propietarioID
+                               orderby a.Nombre
+                               select a;
+                return PartialView("_archivosNoticia", archivos);
+            }
+
+            return Json(new
+            {
+                status = "unknow",
+                message = "Esto no deberia llegar hasta aqui (por ahora)."
+            });
+        } // EliminarArchivo
 
         protected override void Dispose(bool disposing)
         {

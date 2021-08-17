@@ -237,7 +237,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Archivos\Noticias\leelee sobieski.jpg" />
     <Content Include="Content\bootstrap-chosen.css" />
     <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-datepicker.min.css" />
@@ -1111,6 +1110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Archivos\Noticias\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

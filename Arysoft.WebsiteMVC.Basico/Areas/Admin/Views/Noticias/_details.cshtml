@@ -64,7 +64,7 @@
                             @Html.DisplayFor(model => model.Resumen)
                         </p>
                         <div title="@Html.DisplayNameFor(model => model.HTMLContent)">
-                            @Html.Raw(Model.HTMLContent)
+                            @Html.Raw(Model.HTMLContent.Replace("<img ", "<img class='img-fluid' "))
                         </div>
                         <p class="text-right" title="@Html.DisplayNameFor(model => model.Autor)">
                             <em>@Html.DisplayFor(model => model.Autor)</em>
