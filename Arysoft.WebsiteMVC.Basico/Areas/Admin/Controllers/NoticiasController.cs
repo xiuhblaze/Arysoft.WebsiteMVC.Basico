@@ -40,6 +40,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             ViewBag.Filtro = buscar;
             var noticias = db.Noticias
                 .Include(n => n.Archivos)
+                .Include(n => n.Notas)
                 .Where(n => n.Status != NoticiaStatus.Ninguno);
             if (!string.IsNullOrEmpty(buscar) || myStatus != NoticiaStatus.Ninguno)
             {
@@ -380,6 +381,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
         } // AgregarImagenPrincipal
 
+        // ARCHIVOS
+
         public ActionResult AgregarArchivos(Guid id)
         {
             if (Request.Files.Count > 0)
@@ -501,6 +504,60 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 message = "Esto no deberia llegar hasta aqui (por ahora)."
             });
         } // EliminarArchivo
+
+        // NOTAS
+
+        [HttpPost]
+        public ActionResult AgregarNota(Guid id, string nota)
+        {
+            if (string.IsNullOrEmpty(nota))
+            {
+                return Json(new { 
+                    status = "notnote",
+                    message = "No se encontró la nota."
+                });
+            }
+
+            try
+            {
+                Nota miNota = new Nota()
+                {
+                    NotaID = Guid.NewGuid(),
+                    PropietarioID = id,
+                    Texto = nota,
+                    Autor = "<nombre del autor>",
+                    Status = StatusTipo.Activo,
+                    FechaCreacion = DateTime.Now,
+                    FechaActualizacion = DateTime.Now,
+                    UsuarioActualizacion = User.Identity.Name
+                };
+                db.Notas.Add(miNota);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return Json(new
+                {
+                    status = "exception",
+                    message = "A ocurrido una excepción: " + e.Message
+                });
+            }
+
+            if (Request.IsAjaxRequest())
+            {   
+                var notas = from n in db.Notas
+                            where n.PropietarioID == id
+                            orderby n.FechaCreacion
+                            select n;
+                return PartialView("_notasNoticia", notas);
+            }
+
+            return Json(new
+            {
+                status = "unknow",
+                message = "Esto no deberia llegar hasta aqui (por ahora)."
+            });
+        } // AgregarNota
 
         protected override void Dispose(bool disposing)
         {

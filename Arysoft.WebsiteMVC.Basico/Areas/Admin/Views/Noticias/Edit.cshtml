@@ -212,7 +212,9 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="button" id="subirArchivosButton" class="btn btn-outline-primary"><i class="bi-upload"></i></button>
+                            <button type="button" id="subirArchivosButton" class="btn btn-outline-primary">
+                                <i class="bi-upload"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="row">
@@ -232,7 +234,22 @@
                 <!-- NOTAS -->
                 <div class="tab-pane fade" id="notas" role="tabpanel" aria-labelledby="notas-tab">
                     <h4 class="mt-3">Notas</h4>
-                    <div class="card bg-warning shadow-sm mt-4">
+                    <div class="form-row">
+                        <div class="col-md-10">
+                            <textarea id="notaTextarea" class="form-control" 
+                                      style="border-color: #ffc107;"
+                                      placeholder="Escribe para agregar una nota..."></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="guardarNotaButton" class="btn btn-outline-warning">
+                                <i class="bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="notasNoticiasDiv">
+                        @Html.Partial("_notasNoticia", Model.Notas)
+                    </div>
+                    @*<div class="card bg-warning shadow-sm mt-4">
                         <div class="card-body">
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                             <footer class="blockquote-footer">
@@ -249,7 +266,7 @@
                                 Elizabeth Retana, 31/07/2021 12:10 am
                             </footer>
                         </div>
-                    </div>
+                    </div>*@
                 </div>
             </div>
         </div>
@@ -423,6 +440,55 @@
                     alert("FormData is not supported.");
                 }
             }); // subirArchivosButton.click
+
+            // NOTAS
+
+            $('#guardarNotaButton').attr('disabled', true);            
+            // https://stackoverflow.com/questions/11338592/how-can-i-bind-to-the-change-event-of-a-textarea-in-jquery
+            $('#notaTextarea').bind('input propertychange', function () {
+
+                if (this.value.length) {
+                    $('#guardarNotaButton').attr('disabled', false);
+                } else {
+                    $('#guardarNotaButton').attr('disabled', true);
+                }
+            });
+
+            $('#guardarNotaButton').click(function () {
+                var url = '@Url.Action("AgregarNota", "Noticias")/@Model.NoticiaID';
+                var nota = $('#notaTextarea').val();
+
+                $.ajax({
+                    cache: false,
+                    async: true,
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        nota: nota
+                    },
+                    success: function (result) {
+                        if (result.status === undefined) {
+                            $('#notasNoticiasDiv').html(result);
+                            $('#notaTextarea').val('');
+                            $('#guardarNotaButton').attr('disabled', true);
+                        } else {
+                            switch (result.status) {
+                                case "exception":
+                                    alert(result.message);
+                                    break;
+                                case "notnote":
+                                    alert(result.message);
+                                    break;
+                                default:
+                                    console.log("GuardarNotaButton (switch default): " + result);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            }); // guardarNotaButton.click
 
         }); // document.ready
     </script>

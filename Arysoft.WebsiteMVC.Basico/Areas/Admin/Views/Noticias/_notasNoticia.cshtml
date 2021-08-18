@@ -1,0 +1,31 @@
+﻿@using Arysoft.WebsiteMVC.Basico.Models;
+@using Arysoft.WebsiteMVC.Basico.Areas.Admin.Models;
+
+@model IEnumerable<Nota>
+
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-warning mt-3" role="alert">
+        <h5 class="alert-heading">Sin notas</h5>
+        <p>Aun no tiene notas, utilice el formulario superior para agregar una nota.</p>
+    </div>
+}
+else {
+    <div style="max-height: 800px; overflow-y: scroll;">
+        @foreach (Nota nota in Model)
+        { 
+        <div class="card bg-warning shadow-sm mt-4">
+            <div class="card-body">
+                <p class="card-text">@nota.Texto</p>
+                <footer class="blockquote-footer">
+                    @nota.Autor | @nota.FechaCreacion
+                </footer>
+            </div>
+        </div>
+        }
+    </div>
+}
+
+<script>
+    document.getElementById("notasTabCount").innerHTML = "@Model.Count()";
+</script>

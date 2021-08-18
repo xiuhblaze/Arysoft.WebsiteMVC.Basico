@@ -311,6 +311,7 @@
     <Content Include="Areas\Admin\Views\Opciones\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Opciones\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Noticias\_archivosNoticia.cshtml" />
+    <Content Include="Areas\Admin\Views\Noticias\_notasNoticia.cshtml" />
     <None Include="Properties\PublishProfiles\Alpha.pubxml" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />

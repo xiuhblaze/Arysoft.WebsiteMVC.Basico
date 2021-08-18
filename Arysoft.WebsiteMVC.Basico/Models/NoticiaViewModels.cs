@@ -193,8 +193,8 @@ namespace Arysoft.WebsiteMVC.Basico.Models
             this.FechaActualizacion = n.FechaActualizacion;
             this.UsuarioActualizacion = n.UsuarioActualizacion;
 
-            this.Archivos = n.Archivos;
-            this.Notas = n.Notas;
+            this.Archivos = n.Archivos.OrderBy(a => a.Nombre).ToList();
+            this.Notas = n.Notas.OrderByDescending(note => note.FechaCreacion).ToList();
         } // NoticiaEditViewModel : Constructor
 
         // METODOS
