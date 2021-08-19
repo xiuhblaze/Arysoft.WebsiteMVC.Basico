@@ -123,6 +123,42 @@
                 <!-- OPCIONES -->
                 <div class="tab-pane fade show active" id="opciones" role="tabpanel" aria-labelledby="opciones-tab">
                     <div class="form-group mt-2">
+                        <div class="alert alert-me-gusta">
+                            <div class="form-row">
+                                <div class="col-md-8 pt-2">
+                                    <h5>
+                                        <i class="bi-hand-thumbs-up-fill"></i>
+                                        Me Gusta:
+                                        <strong id="meGustaStrong">
+                                            @Html.DisplayFor(model => model.MeGusta)
+                                        </strong>
+                                    </h5>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <button type="button" id="meGustaResetButton" class="btn btn-outline-light"><i class="bi-arrow-counterclockwise"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <div class="alert alert-visitas">
+                            <div class="form-row">
+                                <div class="col-md-8 pt-2">
+                                    <h5>
+                                        <i class="bi-hand-thumbs-up-fill"></i>
+                                        Visitas:
+                                        <strong id="visitasStrong">
+                                            @Html.DisplayFor(model => model.ContadorVisitas)
+                                        </strong>
+                                    </h5>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <button type="button" id="visitasResetButton" class="btn btn-outline-light"><i class="bi-arrow-counterclockwise"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="mr-2">Imagen Principal</label>
                         <div class="form-row">
                             <div class="col-md-10">
@@ -175,13 +211,13 @@
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="statusPublicado" name="status" 
+                            <input type="radio" id="statusPublicado" name="status"
                                    value="@NoticiaStatus.Publicada" @(Model.Status == NoticiaStatus.Publicada ? "checked" : "")
                                    class="custom-control-input" aria-describedby="StatusHelpBlock" />
                             <label class="custom-control-label" for="statusPublicado">Publicada</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="statusOculto" name="status" 
+                            <input type="radio" id="statusOculto" name="status"
                                    value="@NoticiaStatus.Oculta" @(Model.Status == NoticiaStatus.Oculta ? "checked" : "")
                                    class="custom-control-input" aria-describedby="StatusHelpBlock" />
                             <label class="custom-control-label" for="statusOculto">Oculta</label>
@@ -301,6 +337,18 @@
         });
 
         $(document).ready(function () {
+
+            // ME GUSTA & VISITAS
+
+            $('#meGustaResetButton').click(function () {
+                $('#meGustaStrong').html('0');
+                $('#MeGusta').val('0');
+            });
+
+            $('#visitasResetButton').click(function () {
+                $('#visitasStrong').html('0');
+                $('#ContadorVisitas').val('0');
+            });
 
             // IMAGEN PRINCIPAL
 

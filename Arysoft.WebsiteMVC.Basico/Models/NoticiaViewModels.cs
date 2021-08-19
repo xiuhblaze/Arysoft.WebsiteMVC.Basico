@@ -99,8 +99,8 @@ namespace Arysoft.WebsiteMVC.Basico.Models
             this.FechaActualizacion = noticia.FechaActualizacion;
             this.UsuarioActualizacion = noticia.UsuarioActualizacion;
 
-            this.Archivos = noticia.Archivos;
-            this.Notas = noticia.Notas;
+            this.Archivos = noticia.Archivos.OrderBy(a => a.Nombre).ToList();
+            this.Notas = noticia.Notas.OrderByDescending(note => note.FechaCreacion).ToList();
 
             this.Origen = origen;
             this.SoloLectura = soloLectura ?? false;

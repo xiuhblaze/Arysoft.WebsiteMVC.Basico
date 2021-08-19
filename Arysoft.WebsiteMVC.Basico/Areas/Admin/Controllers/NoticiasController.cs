@@ -26,10 +26,10 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             ViewBag.MenuActive = "noticias";
 
             ViewBag.Orden = orden;
-            ViewBag.OrdenNombre = string.IsNullOrEmpty(orden) ? "titulo_desc" : "";
+            ViewBag.OrdenPublicacion = string.IsNullOrEmpty(orden) ? "publicacion" : "";
+            ViewBag.OrdenNombre = orden == "titulo" ? "titulo_desc" : "";
             ViewBag.OrdenAutor = orden == "autor" ? "autor_desc" : "autor";
             ViewBag.OrdenVisitas = orden == "visitas" ? "visitas_desc" : "visitas";
-            ViewBag.OrdenPublicacion = orden == "publicacion" ? "publicacion_desc" : "publicacion";
             ViewBag.OrdenMeGusta = orden == "megusta" ? "megusta_desc" : "megusta";
             if (buscar != null)
             {
@@ -60,35 +60,35 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             switch (orden)
             {
+                case "publicacion":
+                    noticias = noticias.OrderBy(n => n.FechaPublicacion);
+                    break;
+                case "titulo":
+                    noticias = noticias.OrderBy(n => n.Titulo);
+                    break;
                 case "titulo_desc":
-                    noticias.OrderByDescending(n => n.Titulo);
+                    noticias = noticias.OrderByDescending(n => n.Titulo);
                     break;
                 case "autor":
-                    noticias.OrderBy(n => n.Autor);
+                    noticias = noticias.OrderBy(n => n.Autor);
                     break;
                 case "autor_desc":
-                    noticias.OrderByDescending(n => n.Autor);
+                    noticias = noticias.OrderByDescending(n => n.Autor);
                     break;
                 case "visitas":
-                    noticias.OrderBy(n => n.ContadorVisitas);
+                    noticias = noticias.OrderBy(n => n.ContadorVisitas);
                     break;
                 case "visitas_desc":
-                    noticias.OrderByDescending(n => n.ContadorVisitas);
-                    break;
-                case "publicacion":
-                    noticias.OrderBy(n => n.FechaPublicacion);
-                    break;
-                case "publicacion_desc":
-                    noticias.OrderByDescending(n => n.FechaPublicacion);
+                    noticias = noticias.OrderByDescending(n => n.ContadorVisitas);
                     break;
                 case "megusta":
-                    noticias.OrderBy(n => n.MeGusta);
+                    noticias = noticias.OrderBy(n => n.MeGusta);
                     break;
                 case "megusta_desc":
-                    noticias.OrderByDescending(n => n.MeGusta);
+                    noticias = noticias.OrderByDescending(n => n.MeGusta);
                     break;
                 default:
-                    noticias.OrderBy(n => n.Titulo);
+                    noticias = noticias.OrderByDescending(n => n.FechaPublicacion);
                     break;
             }
 
@@ -126,6 +126,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             if (Request.IsAjaxRequest())
             {
+                TempData["isReadonly"] = true;
                 NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "details", true);
                 return PartialView("_details", n);
             }
@@ -167,24 +168,6 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
         } // Create
 
-        //// POST: Admin/Noticias/Create
-        //// Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        //// más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Create([Bind(Include = "NoticiaID,Titulo,Resumen,HTMLContent,Autor,TieneGaleria,ContadorVisitas,Idioma,FechaPublicacion,ImagenArchivo,MeGusta,Status,FechaCreacion,FechaActualizacion,UsuarioActualizacion")] Noticia noticia)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        noticia.NoticiaID = Guid.NewGuid();
-        //        db.Noticias.Add(noticia);
-        //        await db.SaveChangesAsync();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    return View(noticia);
-        //}
-
         // GET: Admin/Noticias/Edit/5
         public async Task<ActionResult> Edit(Guid? id)
         {
@@ -210,6 +193,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
+            TempData["isReadonly"] = false;
             return View(new NoticiaEditViewModel(noticia));
         } // Edit
 
@@ -239,6 +223,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            TempData["isReadonly"] = false;
             return View(noticia);
         } // Edit
 
@@ -264,6 +250,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             if (Request.IsAjaxRequest())
             {
+                TempData["isReadonly"] = true;
                 NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "delete", true);
                 return PartialView("_details", n);
             }
@@ -279,11 +266,19 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             if (noticia.Status == NoticiaStatus.Eliminada)
             {
-                // HACK: Falta remover los archivos y las notas asociadas a la noticia
-
                 // Eliminando la carpeta de archivos de la noticia
                 string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), noticia.NoticiaID.ToString());
                 if (Directory.Exists(dname)) { Directory.Delete(dname, true); }
+                // Eliminando registros asociados a la noticia
+                foreach (Nota n in await db.Notas.Where(n => n.PropietarioID == noticia.NoticiaID).ToListAsync())
+                {
+                    db.Notas.Remove(n);
+                }
+                foreach (Archivo a in await db.Archivos.Where(a => a.PropietarioID == noticia.NoticiaID).ToListAsync())
+                {
+                    db.Archivos.Remove(a);
+                }
+                // Eliminando la noticia
                 db.Noticias.Remove(noticia);
             }
             else
@@ -432,6 +427,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
                     if (Request.IsAjaxRequest())
                     {
+                        TempData["isReadonly"] = false;
                         var archivos = from a in db.Archivos
                                        where a.PropietarioID == id
                                        orderby a.Nombre
@@ -491,6 +487,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             if (Request.IsAjaxRequest())
             {
+                TempData["isReadonly"] = false;
                 var archivos = from a in db.Archivos
                                where a.PropietarioID == propietarioID
                                orderby a.Nombre
@@ -544,7 +541,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
 
             if (Request.IsAjaxRequest())
-            {   
+            {
+                TempData["isReadonly"] = false;
                 var notas = from n in db.Notas
                             where n.PropietarioID == id
                             orderby n.FechaCreacion
@@ -579,6 +577,17 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             foreach (var noticia in noticias)
             {
+                string dname = Path.Combine(Server.MapPath("~/Archivos/Noticias/"), noticia.NoticiaID.ToString());
+                if (Directory.Exists(dname)) { Directory.Delete(dname, true); }
+                
+                foreach (Nota n in await db.Notas.Where(n => n.PropietarioID == noticia.NoticiaID).ToListAsync())
+                {
+                    db.Notas.Remove(n);
+                }
+                foreach (Archivo a in await db.Archivos.Where(a => a.PropietarioID == noticia.NoticiaID).ToListAsync())
+                {
+                    db.Archivos.Remove(a);
+                }
                 db.Noticias.Remove(noticia);
             }
             await db.SaveChangesAsync();
