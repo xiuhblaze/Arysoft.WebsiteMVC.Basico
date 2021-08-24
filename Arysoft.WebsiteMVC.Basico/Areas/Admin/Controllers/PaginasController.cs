@@ -8,6 +8,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Arysoft.WebsiteMVC.Basico.Models;
+using Arysoft.WebsiteMVC.Basico.Areas.Admin.Models;
+using PagedList;
 
 namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 {
@@ -16,11 +18,81 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Admin/Paginas
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string buscar, string filtro, string orden, string status, int? pagina)
         {
-            var paginas = db.Paginas.Include(p => p.PaginaPadre);
-            return View(await paginas.ToListAsync());
-        }
+            PaginaStatus myStatus = (PaginaStatus)(string.IsNullOrEmpty(status) ? PaginaStatus.Ninguno : Enum.Parse(typeof(PaginaStatus), status));
+
+            ViewBag.MenuActive = "paginas";
+
+            ViewBag.Orden = orden;
+            ViewBag.OrdenTitulo = string.IsNullOrEmpty(orden) ? "titulo_desc" : "";
+            ViewBag.OrdenFecha = orden == "fecha" ? "fecha_desc" : "fecha";
+            ViewBag.OrdenVisitas = orden == "visitas" ? "visitas_desc" : "visitas";
+            ViewBag.OrdenMeGusta = orden == "megusta" ? "megusta_desc" : "megusta";
+            if (buscar != null)
+            {
+                pagina = 1;
+                buscar = buscar.Trim();
+            }
+            else { buscar = filtro ?? string.Empty; }
+            ViewBag.Filtro = buscar;
+            var paginas = db.Paginas
+                .Include(p => p.PaginaPadre)
+                .Include(p => p.Archivos)
+                .Include(p => p.Notas)
+                .Where(p => p.Status != PaginaStatus.Ninguno);
+            if (!string.IsNullOrEmpty(buscar) || myStatus != PaginaStatus.Ninguno)
+            {
+                bool hayPalabras = !string.IsNullOrEmpty(buscar);
+
+                paginas = paginas.Where(p => 
+                    (
+                        (!hayPalabras)
+                        || p.Titulo.Contains(buscar)
+                        || p.Resumen.Contains(buscar)
+                        || p.HtmlContent.Contains(buscar)
+                    )
+                    && (myStatus == PaginaStatus.Ninguno ? true : p.Status == myStatus)
+                );
+            }
+            switch (orden)
+            {
+                case "titulo_desc":
+                    paginas = paginas.OrderByDescending(p => p.Titulo);
+                    break;
+                case "fecha":
+                    paginas = paginas.OrderBy(p => p.FechaActualizacion);
+                    break;
+                case "fecha_desc":
+                    paginas = paginas.OrderByDescending(p => p.FechaActualizacion);
+                    break;
+                case "visitas":
+                    paginas = paginas.OrderBy(p => p.ContadorVisitas);
+                    break;
+                case "visitas_desc":
+                    paginas = paginas.OrderBy(p => p.ContadorVisitas);
+                    break;
+                case "megusta":
+                    paginas = paginas.OrderBy(p => p.MeGusta);
+                    break;
+                case "megusta_desc":
+                    paginas = paginas.OrderByDescending(p => p.MeGusta);
+                    break;
+                default:
+                    paginas = paginas.OrderBy(p => p.Titulo);
+                    break;
+            }
+            List<PaginaIndexListViewModel> paginasViewModel = new List<PaginaIndexListViewModel>();
+            foreach (Pagina miPagina in await paginas.ToListAsync())
+            {
+                paginasViewModel.Add(new PaginaIndexListViewModel(miPagina));
+            }
+            ViewBag.Count = paginasViewModel.Count();
+            int numeroPagina = pagina ?? 1;
+            int elementosPagina = Comun.ELEMENTOS_PAGINA;
+
+            return View(paginasViewModel.ToPagedList(numeroPagina, elementosPagina));
+        } // Index
 
         // GET: Admin/Paginas/Details/5
         public async Task<ActionResult> Details(Guid? id)

@@ -19,6 +19,10 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [Required(ErrorMessage = "Es necesario el título de la página")]
         public string Titulo { get; set; }
 
+        [Display(Name = "Indice", Description = "Indice para el orden con la etiqueta de menu")]
+        [Range(0, 100, ErrorMessage = "El valor no puede ser menor que cero ni mayor a 100")]
+        public int IndiceMenu { get; set; }
+
         [Display(Name = "Etiqueta para menú"), StringLength(30)]
         [Required(ErrorMessage = "Falta indicar la etiqueta para el menú")]
         public string EtiquetaMenu { get; set; }
@@ -57,7 +61,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
         public int MeGusta { get; set; }
 
-        public PaginaEstatus Status { get; set; }
+        public PaginaStatus Status { get; set; }
         
         [DataType(DataType.DateTime)]
         [Display(Name = "Creación")]
@@ -73,19 +77,22 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [Display(Name = "Actualizado por")]
         public string UsuarioActualizacion { get; set; }
 
-        // VIRTUAL
+        // RELACIONES
 
         [ForeignKey("PaginaPadreID")]
-        public virtual Pagina PaginaPadre { get; set; }
+        public Pagina PaginaPadre { get; set; }
 
         [ForeignKey("PaginaPadreID")]
-        public virtual ICollection<Pagina> PaginasHijo { get; set; }
+        public ICollection<Pagina> PaginasHijo { get; set; }
 
         [ForeignKey("PropietarioID")]
-        public virtual ICollection<Archivo> Archivos { get; set; }
+        public ICollection<Archivo> Archivos { get; set; }
+
+        [ForeignKey("PropietarioID")]
+        public ICollection<Nota> Notas { get; set; }
     } // Pagina
 
-    public enum PaginaEstatus
+    public enum PaginaStatus
     {
         Ninguno,    // Página temporal, aun no ha sido guardada
         Nueva,      // Página nueva, aun no es visible al público

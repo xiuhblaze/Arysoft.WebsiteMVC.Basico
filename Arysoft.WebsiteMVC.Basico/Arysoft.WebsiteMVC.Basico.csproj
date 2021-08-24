@@ -215,6 +215,7 @@
     <Compile Include="Areas\Admin\Controllers\OpcionesController.cs" />
     <Compile Include="Areas\Admin\Controllers\PaginasController.cs" />
     <Compile Include="Areas\Admin\Models\Comun.cs" />
+    <Compile Include="Areas\Admin\Models\PaginaViewModels.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -283,9 +284,6 @@
     <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
     <Content Include="Content\jasny-bootstrap.css.map" />
-    <Content Include="Areas\Admin\Views\Noticias\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticias\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\Noticias\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Noticias\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Noticias\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Index.cshtml" />

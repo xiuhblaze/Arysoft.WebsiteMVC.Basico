@@ -1,86 +1,110 @@
-﻿@model IEnumerable<Arysoft.WebsiteMVC.Basico.Models.Pagina>
+﻿@using Arysoft.WebsiteMVC.Basico.Models;
+@using Arysoft.WebsiteMVC.Basico.Areas.Admin.Models;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<PaginaIndexListViewModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Paginas";
 }
 
-<h2>Index</h2>
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="details-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Pagina</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="details-modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">...</button>
+            </div>
+        </div> <!-- modal-content -->
+    </div>
+</div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<h2>Paginas</h2>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Index", "Paginas", FormMethod.Get, new { @class = "form-inline mb-2" }))
+        {
+            @Html.Raw(
+                Html.ActionLink("[nuevo]", "Create", null, new { @class = "btn btn-outline-primary mr-3", @title = "Nueva pagina" }).ToHtmlString()
+                    .Replace("[nuevo]", "<i class='bi-file-earmark-fill'></i>")
+            )
+            <label class="sr-only" for="">Buscar</label>
+            @Html.TextBox("buscar", ViewBag.Filtro as string, htmlAttributes: new { @class = "form-control mr-sm-2", @placeholder = "buscar..." })
+            <button type="submit" id="buscarButton" class="btn btn-primary" title="Buscar...">
+                <i class="bi-search"></i>
+            </button>
+        }
+        <div class="alert alert-secondary" role="alert">
+            Total de resultados en la consulta: @ViewBag.Count
+        </div>
+    </div>
+</div>
+@Html.PagedListPager(Model, pagina => Url.Action("Index", new
+    {
+        pagina,
+        orden = ViewBag.Orden,
+        filtro = ViewBag.Filtro
+    })
+)
+
+
 <div class="table-responsive">
     <table class="table table-hover">
         <tr>
+
             <th>
-                @Html.DisplayNameFor(model => model.PaginaPadre.Titulo)
+                Titulo
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Titulo)
+                Etiqueta
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EtiquetaMenu)
+                Resumen
+            </th>
+
+            <th>
+                Visible
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Resumen)
+                Url
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HtmlContent)
+                Target
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Visible)
+                Galeria
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TargetUrl)
+                Visitas
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Target)
+                Idioma
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TieneGaleria)
+                Principal
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ContadorVisitas)
+                Me gusta
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaContador)
+                Status
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Idioma)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EsPrincipal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HTMLHeadScript)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HTMLFooterScript)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MeGusta)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaCreacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaActualizacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UsuarioActualizacion)
-            </th>
+
             <th></th>
         </tr>
 
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaginaPadre.Titulo)
-                </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.Titulo)
                 </td>
@@ -90,9 +114,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Resumen)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HtmlContent)
-                </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.Visible)
                 </td>
@@ -109,19 +131,10 @@
                     @Html.DisplayFor(modelItem => item.ContadorVisitas)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FechaContador)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Idioma)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.EsPrincipal)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HTMLHeadScript)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HTMLFooterScript)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.MeGusta)
@@ -129,15 +142,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaCreacion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaActualizacion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UsuarioActualizacion)
-                </td>
+
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.PaginaID }) |
                     @Html.ActionLink("Details", "Details", new { id = item.PaginaID }) |

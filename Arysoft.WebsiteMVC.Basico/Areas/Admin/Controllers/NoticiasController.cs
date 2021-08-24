@@ -57,7 +57,6 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     && (myStatus == NoticiaStatus.Ninguno ? true : n.Status == myStatus)
                 );
             }
-
             switch (orden)
             {
                 case "publicacion":
@@ -91,7 +90,6 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     noticias = noticias.OrderByDescending(n => n.FechaPublicacion);
                     break;
             }
-
             List<NoticiaIndexListViewModel> noticiasViewModel = new List<NoticiaIndexListViewModel>();
             foreach (Noticia noticia in await noticias.ToListAsync())
             {
@@ -391,7 +389,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
                     BoolTipo incluirGaleria = Request.Params["incluirGaleria"] == "true" ? BoolTipo.Si : BoolTipo.No;
                     string[] allowedExtensions = new string[] { ".jpg", ".gif", ".png", ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
-                    string[] imagesExtensions = new string[] { ".jpg", ".gif", ".png" };
+                    //string[] imagesExtensions = new string[] { ".jpg", ".gif", ".png" };
 
                     for (int i = 0; i < files.Count; i++)
                     {
@@ -401,8 +399,9 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                         fname = Path.GetFileNameWithoutExtension(file.FileName);
                         fname = fname.ToSingleSpaces().CleanInvalidFileNameChars();
                         fextension = Path.GetExtension(file.FileName).ToLower();
-                        // HACK: Falta utilizar allowedExtensions
-                        if (Array.Exists(imagesExtensions, e => e == fextension) && incluirGaleria == BoolTipo.Si)
+
+                        if (!Array.Exists(Comun.FILES_ALLOWED_EXTENSIONS, e => e == fextension)) { continue; }
+                        if (Array.Exists(Comun.FILES_IMAGES_EXTENSIONS, e => e == fextension) && incluirGaleria == BoolTipo.Si)
                         {
                             enGaleria = BoolTipo.Si;
                         }
