@@ -56,4 +56,57 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
             this.ContadorNotas = pagina.Notas != null ? pagina.Notas.Count : 0;
         }
     } // PaginaIndexListViewModel
+
+    [NotMapped]
+    public class PaginaDetailsViewModel : Pagina 
+    {
+        /// <summary>
+        /// Obtiene o establece un valor que se pasa a las vistas y determina si el origen del modelo
+        /// es desde un metodo de consulta o para dar de baja el registro
+        /// </summary>        
+        public string Origen { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece un valor qe se pasa a las vistas para determinar si la información
+        /// se va a mostrar como solo lectura o para edición
+        /// </summary>        
+        public bool SoloLectura { get; set; }
+
+        // CONSTRUCTORES
+
+        public PaginaDetailsViewModel(Pagina pagina, string origen = "", bool? soloLectura = false)
+        {
+            this.PaginaID = pagina.PaginaID;
+            this.PaginaPadreID = pagina.PaginaPadreID;
+            this.Titulo = pagina.Titulo;
+            this.IndiceMenu = pagina.IndiceMenu;
+            this.EtiquetaMenu = pagina.EtiquetaMenu;
+            this.Resumen = pagina.Resumen;
+            this.HTMLContent = pagina.HTMLContent;
+            this.Visible = pagina.Visible;            
+            this.TargetUrl = pagina.TargetUrl;
+            this.Target = pagina.Target;
+            this.TieneGaleria = pagina.TieneGaleria;
+            this.ContadorVisitas = pagina.ContadorVisitas;
+            this.FechaContador = pagina.FechaContador;
+            this.Idioma = pagina.Idioma;
+            this.EsPrincipal = pagina.EsPrincipal;
+            this.HTMLHeadScript = pagina.HTMLHeadScript;
+            this.HTMLFooterScript = pagina.HTMLFooterScript;
+            this.MeGusta = pagina.MeGusta;
+            this.Status = pagina.Status;
+            
+            this.FechaCreacion = pagina.FechaCreacion;
+            this.FechaActualizacion = pagina.FechaActualizacion;
+            this.UsuarioActualizacion = pagina.UsuarioActualizacion;
+
+            this.PaginaPadre = pagina.PaginaPadre;
+            this.Archivos = pagina.Archivos.OrderBy(a => a.Nombre).ToList();
+            this.Notas = pagina.Notas.OrderByDescending(n => n.FechaCreacion).ToList();
+
+            this.Origen = origen;
+            this.SoloLectura = soloLectura ?? false;
+        } // PaginaDetailsViewModel :: Constructor
+
+    } // PaginaDetailsViewModel
 }

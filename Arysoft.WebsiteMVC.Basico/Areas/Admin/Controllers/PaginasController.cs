@@ -50,7 +50,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                         (!hayPalabras)
                         || p.Titulo.Contains(buscar)
                         || p.Resumen.Contains(buscar)
-                        || p.HtmlContent.Contains(buscar)
+                        || p.HTMLContent.Contains(buscar)
                     )
                     && (myStatus == PaginaStatus.Ninguno ? true : p.Status == myStatus)
                 );
@@ -99,15 +99,29 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         {
             if (id == null)
             {
+                TempData["MessageBox"] = "No se recibió el identificador";
+                if (Request.IsAjaxRequest()) return Content("BadRequest");
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pagina pagina = await db.Paginas.FindAsync(id);
+            Pagina pagina = await db.Paginas
+                .Include(p => p.Archivos)
+                .Include(p => p.Notas)
+                .FirstOrDefaultAsync(p => p.PaginaID == id);
             if (pagina == null)
             {
+                TempData["MessageBox"] = "No se encontró el registro del identificador";
+                if (Request.IsAjaxRequest()) return Content("HttpNotFound");
                 return HttpNotFound();
             }
+
+            if (Request.IsAjaxRequest())
+            {
+                TempData["isReadonly"] = true;
+                PaginaDetailsViewModel p = new PaginaDetailsViewModel(pagina, "details", true);
+                return PartialView("_details", p);
+            }
             return View(pagina);
-        }
+        } // Details
 
         // GET: Admin/Paginas/Create
         public ActionResult Create()

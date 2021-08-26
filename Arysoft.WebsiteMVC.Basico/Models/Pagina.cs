@@ -30,7 +30,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [StringLength(1000)]
         public string Resumen { get; set; }
                 
-        public string HtmlContent { get; set; }
+        public string HTMLContent { get; set; }
 
         public BoolTipo Visible { get; set; }
 

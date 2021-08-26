@@ -42,7 +42,7 @@
                 <i class="bi-search"></i>
             </button>
         }
-        <div class="alert alert-secondary" role="alert">
+        <div class="alert alert-secondary mb-0" role="alert">
             Total de resultados en la consulta: @ViewBag.Count
         </div>
     </div>
@@ -60,6 +60,10 @@
     {
         string classListGroup = "list-group-item list-group-item-action";
         string classStatusIcon = "(status icon)";
+        string classGaleriaIcon = "<i class='bi-image text-muted icon' title='Galeria deshabilitada'></i> Sin galeria";
+        string classEsPrincipalIcon = "";
+        string classArchivosIcon = "<i class='bi-paperclip text-muted icon' title='Sin archivos'></i> sin archivos";
+        string classNotasIcon = "<i class='bi-square-fill text-muted icon' title='Sin notas'></i> sin notas";
         string classMeGustaBadge = "badge badge-primary";
         string classVisitasBadge = "badge badge-success";
 
@@ -79,6 +83,26 @@
                 break;
         }
 
+        if (item.TieneGaleria == BoolTipo.Si)
+        {
+            classGaleriaIcon = "<i class='bi-image icon text-success' title='Galeria habilitda'></i> Tiene galeria";
+        }
+
+        if (item.EsPrincipal == BoolTipo.Si)
+        {
+            classEsPrincipalIcon = "<i class='bi-award icon text-primary' title='Galeria habilitda'></i> Es principal | ";
+        }
+
+        if (item.ContadorArchivos > 0)
+        {
+            classArchivosIcon = "<i class='bi-paperclip text-info icon' title='" + item.ContadorArchivos + " archivo(s)'></i> " + item.ContadorArchivos + " archivo(s)";
+        }
+
+        if (item.ContadorNotas > 0)
+        {
+            classNotasIcon = "<i class='bi-square-fill text-warning icon' title='" + item.ContadorNotas + " nota(s)'></i> " + item.ContadorNotas + " nota(s)";
+        }
+
         <div class="@classListGroup">
             <div class="media">
                 <img src="~/Images/icon64x64.png" class="mr-3" alt="Imagen por default" />
@@ -88,8 +112,9 @@
                             <a href="javascript: getDetails('@item.PaginaID');" title="Ver detalles de la página">
                                 @Html.DisplayFor(modelItem => item.Titulo)
                             </a>
+                            <br />
+                            <small title="Página padre">@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
                         </h5>
-                        <small>@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
                         <div>
                             @if (item.Status != PaginaStatus.Eliminada)
                             {
@@ -108,7 +133,7 @@
                         </div>
                     </div>
                     <p class="mb-1">@Html.DisplayFor(modelItem => item.Resumen)</p>
-                    <p>
+                    <p class="mb-1">
                         <span class="@classMeGustaBadge">
                             <i class="bi-hand-thumbs-up-fill"></i>
                             Me gusta: @Html.DisplayFor(modelItem => item.MeGusta)
@@ -118,7 +143,15 @@
                             Visitas: @Html.DisplayFor(modelItem => item.ContadorVisitas)
                         </span>
                     </p>
-                    <small>@Html.Raw(classStatusIcon) | Es visible | Tiene galeria | Es principal | Idioma: @Html.DisplayFor(modelItem => item.Idioma) | Es Galeria | Target: @Html.DisplayFor(modelItem => item.Target)</small>
+                    <p class="mb-0">
+                        @Html.Raw(classStatusIcon) |
+                        @Html.Raw(classGaleriaIcon) |
+                        @Html.Raw(classEsPrincipalIcon)
+                        Idioma: <strong>@item.Idioma.GetDisplayName()</strong> |
+                        Target: <strong>@Html.DisplayFor(modelItem => item.Target)</strong> |
+                        @Html.Raw(classArchivosIcon) |
+                        @Html.Raw(classNotasIcon)
+                    </p>
                 </div>
             </div>
 
@@ -150,7 +183,73 @@
             var url = '@Url.Action("Details", "Paginas")/' + id;
 
             $('#detailsModal').modal('show');
+            $.ajax({
+                cache: false,
+                async: true,
+                type: 'get',
+                url: url,
+                data: {},
+                beforeSend: function () {
+                    $('#details-modal-body').html('<p class="text-center" style="margin: 50px;"><img src="@Url.Content("~/Images/ajax-loader.gif")" /></p>');
+                },
+                success: function (vista) {
+                    switch (vista) {
+                        case "BadRequest":
+                            alert('No se recibió un identificador de la página');
+                            $('#detailsModal').modal('hide');
+                            $('#details-modal-content').html(modalDetailsOriginalContent);
+                            break;
+                        case "HttpNotFound":
+                            alert('No se encontró la página solicitada');
+                            $('#detailsModal').modal('hide');
+                            $('#details-modal-content').html(modalDetailsOriginalContent);
+                            break;
+                        default:
+                            $('#details-modal-content').html(vista);
+                            break;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('A ocurrido una excepción: ' + status + '\n error: ' + error);
+                }
+            });
         } // getDetails
+
+        function getDelete(id) {
+            var url = '@Url.Action("Delete", "Paginas")/' + id;
+
+            $('#detailsModal').modal('show');
+            $.ajax({
+                cache: false,
+                async: true,
+                type: 'get',
+                url: url,
+                data: {},
+                beforeSend: function () {
+                    $('#details-modal-body').html('<p class="text-center" style="margin: 50px;"><img src="@Url.Content("~/Images/ajax-loader.gif")" /></p>');
+                },
+                success: function (vista) {
+                    switch (vista) {
+                        case "BadRequest":
+                            alert('No se recibió un identificador de la página');
+                            $('#detailsModal').modal('hide');
+                            $('#details-modal-content').html(modalDetailsOriginalContent);
+                            break;
+                        case "HttpNotFound":
+                            alert('No se encontró la página solicitada');
+                            $('#detailsModal').modal('hide');
+                            $('#details-modal-content').html(modalDetailsOriginalContent);
+                            break;
+                        default:
+                            $('#details-modal-content').html(vista);
+                            break;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('A ocurrido una excepción: ' + status + '\n error: ' + error);
+                }
+            });
+        } // getDelete
 
     </script>
 }
