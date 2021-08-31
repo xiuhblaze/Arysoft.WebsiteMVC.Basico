@@ -103,59 +103,53 @@
             classNotasIcon = "<i class='bi-square-fill text-warning icon' title='" + item.ContadorNotas + " nota(s)'></i> " + item.ContadorNotas + " nota(s)";
         }
 
-        <div class="@classListGroup">
-            <div class="media">
-                <img src="~/Images/icon64x64.png" class="mr-3" alt="Imagen por default" />
-                <div class="media-body">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">
-                            <a href="javascript: getDetails('@item.PaginaID');" title="Ver detalles de la página">
-                                @Html.DisplayFor(modelItem => item.Titulo)
-                            </a>
-                            <br />
-                            <small title="Página padre">@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
-                        </h5>
-                        <div>
-                            @if (item.Status != PaginaStatus.Eliminada)
-                            {
-                                @Html.Raw(
-                                    @Html.ActionLink("[editar]", "Edit", new { id = item.PaginaID }, new { @class = "btn btn-link" }).ToHtmlString()
-                                        .Replace("[editar]", "<i class='bi-pencil-square' style='font-size: 1.2rem;'></i>")
-                                );
-                            }
+    <div class="@classListGroup">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">
+                <a href="javascript: getDetails('@item.PaginaID');" title="Ver detalles de la página">
+                    @Html.DisplayFor(modelItem => item.Titulo)
+                </a>
+                <br />
+                <small title="Página padre">@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
+            </h5>
+            <div>
+                @if (item.Status != PaginaStatus.Eliminada)
+                {
+                    @Html.Raw(
+                        @Html.ActionLink("[editar]", "Edit", new { id = item.PaginaID }, new { @class = "btn btn-link" }).ToHtmlString()
+                            .Replace("[editar]", "<i class='bi-pencil-square' style='font-size: 1.2rem;'></i>")
+                    );
+                }
 
-                            <span href="#" onclick="getDetails('@item.PaginaID'); return false;" class="btn btn-link">
-                                <i class='bi-info-square' style='font-size: 1.2rem;' title="Detalles"></i>
-                            </span>
-                            <span href="#" onclick="getDelete('@item.PaginaID'); return false;" class="btn btn-link text-danger">
-                                <i class='bi-x-square' style='font-size: 1.2rem;' title="Eliminar"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <p class="mb-1">@Html.DisplayFor(modelItem => item.Resumen)</p>
-                    <p class="mb-1">
-                        <span class="@classMeGustaBadge">
-                            <i class="bi-hand-thumbs-up-fill"></i>
-                            Me gusta: @Html.DisplayFor(modelItem => item.MeGusta)
-                        </span>
-                        <span class="@classVisitasBadge">
-                            <i class="bi-eye-fill"></i>
-                            Visitas: @Html.DisplayFor(modelItem => item.ContadorVisitas)
-                        </span>
-                    </p>
-                    <p class="mb-0">
-                        @Html.Raw(classStatusIcon) |
-                        @Html.Raw(classGaleriaIcon) |
-                        @Html.Raw(classEsPrincipalIcon)
-                        Idioma: <strong>@item.Idioma.GetDisplayName()</strong> |
-                        Target: <strong>@Html.DisplayFor(modelItem => item.Target)</strong> |
-                        @Html.Raw(classArchivosIcon) |
-                        @Html.Raw(classNotasIcon)
-                    </p>
-                </div>
+                <span href="#" onclick="getDetails('@item.PaginaID'); return false;" class="btn btn-link">
+                    <i class='bi-info-square' style='font-size: 1.2rem;' title="Detalles"></i>
+                </span>
+                <span href="#" onclick="getDelete('@item.PaginaID'); return false;" class="btn btn-link text-danger">
+                    <i class='bi-x-square' style='font-size: 1.2rem;' title="Eliminar"></i>
+                </span>
             </div>
-
         </div>
+        <p class="mb-1">@Html.DisplayFor(modelItem => item.Resumen)</p>
+        <p class="mb-1">
+            <span class="@classMeGustaBadge">
+                <i class="bi-hand-thumbs-up-fill"></i>
+                Me gusta: @Html.DisplayFor(modelItem => item.MeGusta)
+            </span>
+            <span class="@classVisitasBadge">
+                <i class="bi-eye-fill"></i>
+                Visitas: @Html.DisplayFor(modelItem => item.ContadorVisitas)
+            </span>
+        </p>
+        <p class="mb-0">
+            @Html.Raw(classStatusIcon) |
+            @Html.Raw(classGaleriaIcon) |
+            @Html.Raw(classEsPrincipalIcon)
+            Idioma: <strong>@item.Idioma.GetDisplayName()</strong> |
+            Target: <strong>@Html.DisplayFor(modelItem => item.Target)</strong> |
+            @Html.Raw(classArchivosIcon) |
+            @Html.Raw(classNotasIcon)
+        </p>
+    </div>
     }
 </div>
 
