@@ -110,7 +110,7 @@
                     @Html.DisplayFor(modelItem => item.Titulo)
                 </a>
                 <br />
-                <small title="Página padre">@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
+                <small title="Página padre">[@Html.DisplayFor(modelItem => item.TituloPaginaPadre)]</small>
             </h5>
             <div>
                 @if (item.Status != PaginaStatus.Eliminada)
@@ -129,7 +129,7 @@
                 </span>
             </div>
         </div>
-        <p class="mb-1">@Html.DisplayFor(modelItem => item.Resumen)</p>
+        <p class="mb-1" title="Resumen">@Html.DisplayFor(modelItem => item.Resumen)</p>
         <p class="mb-1">
             <span class="@classMeGustaBadge">
                 <i class="bi-hand-thumbs-up-fill"></i>

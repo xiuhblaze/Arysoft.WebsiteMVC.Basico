@@ -122,7 +122,7 @@ else
     function deleteFile(id, fname) {
         if (confirm('Realmente desea eliminar el archivo: ' + fname + ', esta acción no se puede deshacer.')) {
             // Llamar Ajax para eliminar el archivo y devolver el listado actualizado
-            var url = '@Url.Action("EliminarArchivo", carpeta)/' + id;
+            var url = '@Url.Action("EliminarArchivo", "Archivos")/' + id;
 
             $.ajax({
                 url: url,

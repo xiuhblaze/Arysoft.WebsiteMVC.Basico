@@ -392,7 +392,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     string fextension = string.Empty;
 
                     BoolTipo incluirGaleria = Request.Params["incluirGaleria"] == "true" ? BoolTipo.Si : BoolTipo.No;
-                    string[] allowedExtensions = new string[] { ".jpg", ".gif", ".png", ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
+                    //string[] allowedExtensions = new string[] { ".jpg", ".gif", ".png", ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
                     //string[] imagesExtensions = new string[] { ".jpg", ".gif", ".png" };
 
                     for (int i = 0; i < files.Count; i++)

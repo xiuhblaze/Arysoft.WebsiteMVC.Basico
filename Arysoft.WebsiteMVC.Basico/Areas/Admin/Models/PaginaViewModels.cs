@@ -251,7 +251,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
                 HTMLHeadScript = this.__headScript,
                 HTMLFooterScript = this.__footerScript,
                 MeGusta = this.MeGusta,
-                Status = this.Status
+                Status = this.Status,
+                FechaCreacion = this.FechaCreacion
             };
 
             return p;

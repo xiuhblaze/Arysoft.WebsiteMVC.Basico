@@ -257,15 +257,29 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         {
             if (id == null)
             {
+                TempData["MessageBox"] = "No se recibió el identificador";
+                if (Request.IsAjaxRequest()) return Content("BadRequest");
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pagina pagina = await db.Paginas.FindAsync(id);
+            Pagina pagina = await db.Paginas
+                .Include(p => p.Archivos)
+                .Include(p => p.Notas)
+                .FirstOrDefaultAsync(p => p.PaginaID == id);
             if (pagina == null)
             {
+                TempData["MessageBox"] = "No se encontró el registro del identificador";
+                if (Request.IsAjaxRequest()) return Content("HttpNotFound");
                 return HttpNotFound();
             }
+            if (Request.IsAjaxRequest())
+            {
+                TempData["isReadonly"] = true;
+                TempData["isPage"] = true;
+                PaginaDetailsViewModel p = new PaginaDetailsViewModel(pagina, "delete", true);
+                return PartialView("_details", p);
+            }
             return View(pagina);
-        }
+        } // Delete
 
         // POST: Admin/Paginas/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -273,10 +287,131 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
             Pagina pagina = await db.Paginas.FindAsync(id);
-            db.Paginas.Remove(pagina);
+
+            if (pagina.Status == PaginaStatus.Eliminada)
+            {
+                // Eliminando la carpeta de archivos de la página
+                string dname = Path.Combine(Server.MapPath("~/Archivos/Paginas/"), pagina.PaginaID.ToString());
+                if (Directory.Exists(dname)) { Directory.Delete(dname, true); }
+                // Eliminando registros asociados a la página
+                foreach (Nota n in await db.Notas.Where(n => n.PropietarioID == pagina.PaginaID).ToListAsync())
+                {
+                    db.Notas.Remove(n);
+                }
+                foreach (Archivo a in await db.Archivos.Where(a => a.PropietarioID == pagina.PaginaID).ToListAsync())
+                {
+                    db.Archivos.Remove(a);
+                }
+                // Eliminando la página
+                db.Paginas.Remove(pagina);
+            }
+            else
+            {
+                pagina.Status = PaginaStatus.Eliminada;
+                pagina.FechaActualizacion = DateTime.Now;
+                pagina.UsuarioActualizacion = User.Identity.Name;
+                db.Entry(pagina).State = EntityState.Modified;
+            }
+            
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
+        } // DeleteConfirmed
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Activar(Guid id)
+        {
+            if (id == null)
+            {
+                TempData["MessageBox"] = "No se recibió el identificador";
+                if (Request.IsAjaxRequest()) return Content("BadRequest");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Pagina pagina = await db.Paginas.FindAsync(id);
+            if (pagina == null)
+            {
+                TempData["MessageBox"] = "No se encontró el registro del identificador";
+                if (Request.IsAjaxRequest()) return Content("HttpNotFound");
+                return HttpNotFound();
+            }
+            pagina.Status = PaginaStatus.Nueva;
+            pagina.FechaActualizacion = DateTime.Now;
+            pagina.UsuarioActualizacion = User.Identity.Name;
+            db.Entry(pagina).State = EntityState.Modified;
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                TempData["MessageBox"] = "A ocurrido una excepción: " + e.Message;
+                return RedirectToAction("Index");
+            }
+            TempData["MessageBox"] = "La página ha sido reactivada.";
+
+            return RedirectToAction("Index");
+        } // Activar
+
+        // ARCHIVOS
+
+        
+
+        // NOTAS
+
+        [HttpPost]
+        public ActionResult AgregarNota(Guid id, string nota)
+        {
+            if (string.IsNullOrEmpty(nota))
+            {
+                return Json(new
+                {
+                    status = "notnote",
+                    message = "No se encontró la nota."
+                });
+            }
+
+            try
+            {
+                Nota miNota = new Nota()
+                {
+                    NotaID = Guid.NewGuid(),
+                    PropietarioID = id,
+                    Texto = nota,
+                    Autor = "<nombre del autor>",
+                    Status = StatusTipo.Activo,
+                    FechaCreacion = DateTime.Now,
+                    FechaActualizacion = DateTime.Now,
+                    UsuarioActualizacion = User.Identity.Name
+                };
+                db.Notas.Add(miNota);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return Json(new
+                {
+                    status = "exception",
+                    message = "A ocurrido una excepción: " + e.Message
+                });
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                TempData["isReadonly"] = false;
+                TempData["isPage"] = false;
+                var notas = from n in db.Notas
+                            where n.PropietarioID == id
+                            orderby n.FechaCreacion descending
+                            select n;
+                return PartialView("~/Areas/Admin/Views/Notas/_notasList.cshtml", notas);
+            }
+
+            return Json(new
+            {
+                status = "unknow",
+                message = "Esto no deberia llegar hasta aqui (por ahora)."
+            });
+        } // AgregarNota
 
         protected override void Dispose(bool disposing)
         {

@@ -408,7 +408,7 @@
                 if (window.FormData !== undefined) {
                     var fileUpload = $('#archivosFileUpload').get(0);
                     var files = fileUpload.files;
-                    var url = '@Url.Action("AgregarArchivos", "Paginas")/@Model.PaginaID';
+                    var url = '@Url.Action("AgregarArchivos", "Archivos")/@Model.PaginaID';
                     var incluirGaleria = $('#incluirGaleriaCheckbox').is(':checked');
                     var fileData = new FormData();
 
@@ -417,6 +417,7 @@
                     }
 
                     fileData.append('incluirGaleria', incluirGaleria);
+                    fileData.append('isPage', 'true');
                     fileData.append('username', 'xBlaze');
 
                     $.ajax({
