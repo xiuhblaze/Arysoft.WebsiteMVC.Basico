@@ -16,7 +16,6 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public Guid? PaginaPadreID { get; set; }
 
         [Display(Name = "Título"), StringLength(150)]
-        [Required(ErrorMessage = "Es necesario el título de la página")]
         public string Titulo { get; set; }
 
         [Display(Name = "Indice", Description = "Indice para el orden con la etiqueta de menu")]
@@ -24,15 +23,12 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         public int IndiceMenu { get; set; }
 
         [Display(Name = "Etiqueta para menú"), StringLength(30)]
-        [Required(ErrorMessage = "Falta indicar la etiqueta para el menú")]
         public string EtiquetaMenu { get; set; }
 
         [StringLength(1000)]
         public string Resumen { get; set; }
                 
         public string HTMLContent { get; set; }
-
-        public BoolTipo Visible { get; set; }
 
         [Display(Name = "Dirección URL", Description = "Direccion url a la cual el enlace va a saltar."), StringLength(255)]
         public string TargetUrl { get; set; }

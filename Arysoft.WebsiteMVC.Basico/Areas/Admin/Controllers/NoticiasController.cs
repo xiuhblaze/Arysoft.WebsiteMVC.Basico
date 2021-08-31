@@ -125,6 +125,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                 TempData["isReadonly"] = true;
+                TempData["isPage"] = false;
                 NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "details", true);
                 return PartialView("_details", n);
             }
@@ -192,6 +193,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
 
             TempData["isReadonly"] = false;
+            TempData["isPage"] = false;
             return View(new NoticiaEditViewModel(noticia));
         } // Edit
 
@@ -223,6 +225,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
 
             TempData["isReadonly"] = false;
+            TempData["isPage"] = false;
             return View(noticia);
         } // Edit
 
@@ -249,6 +252,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                 TempData["isReadonly"] = true;
+                TempData["isPage"] = false;
                 NoticiaDetailsViewModel n = new NoticiaDetailsViewModel(noticia, "delete", true);
                 return PartialView("_details", n);
             }
@@ -427,11 +431,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     if (Request.IsAjaxRequest())
                     {
                         TempData["isReadonly"] = false;
+                        TempData["isPage"] = false; 
                         var archivos = from a in db.Archivos
                                        where a.PropietarioID == id
                                        orderby a.Nombre
                                        select a;
-                        return PartialView("_archivosNoticia", archivos);
+                        return PartialView("~/Areas/Admin/Views/Archivos/_archivosList.cshtml", archivos);
                     }
 
                     return Json(new {
@@ -487,11 +492,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                 TempData["isReadonly"] = false;
+                TempData["isPage"] = false;
                 var archivos = from a in db.Archivos
                                where a.PropietarioID == propietarioID
                                orderby a.Nombre
                                select a;
-                return PartialView("_archivosNoticia", archivos);
+                return PartialView("~/Areas/Admin/Views/Archivos/_archivosList.cshtml", archivos);
             }
 
             return Json(new
@@ -542,11 +548,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                 TempData["isReadonly"] = false;
+                TempData["isPage"] = false;
                 var notas = from n in db.Notas
                             where n.PropietarioID == id
-                            orderby n.FechaCreacion
+                            orderby n.FechaCreacion descending
                             select n;
-                return PartialView("_notasNoticia", notas);
+                return PartialView("~/Areas/Admin/Views/Notas/_notasList.cshtml", notas);
             }
 
             return Json(new

@@ -39,7 +39,6 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
             this.Titulo = pagina.Titulo;
             this.EtiquetaMenu = pagina.EtiquetaMenu;
             this.Resumen = pagina.Resumen;
-            this.Visible = pagina.Visible;
             this.TargetUrl = pagina.TargetUrl;
             this.Target = pagina.Target;
             this.TieneGaleria = pagina.TieneGaleria;
@@ -83,7 +82,6 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
             this.EtiquetaMenu = pagina.EtiquetaMenu;
             this.Resumen = pagina.Resumen;
             this.HTMLContent = pagina.HTMLContent;
-            this.Visible = pagina.Visible;            
             this.TargetUrl = pagina.TargetUrl;
             this.Target = pagina.Target;
             this.TieneGaleria = pagina.TieneGaleria;
@@ -109,4 +107,155 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
         } // PaginaDetailsViewModel :: Constructor
 
     } // PaginaDetailsViewModel
+
+    public class PaginaEditViewModel
+    {
+        public Guid PaginaID { get; set; }
+
+        [Display(Name = "Página padre"), DisplayFormat(NullDisplayText = "(es página padre)")]
+        public Guid? PaginaPadreID { get; set; }
+
+        [Display(Name = "Título"), StringLength(150)]
+        [Required(ErrorMessage = "Es necesario el título de la página")]
+        public string Titulo { get; set; }
+
+        [Display(Name = "Indice", Description = "Indice para el orden con la etiqueta de menu")]
+        [Range(0, 100, ErrorMessage = "El valor no puede ser menor que cero ni mayor a 100")]
+        public int IndiceMenu { get; set; }
+
+        [Display(Name = "Etiqueta para menú"), StringLength(30)]
+        [Required(ErrorMessage = "Falta indicar la etiqueta para el menú")]
+        public string EtiquetaMenu { get; set; }
+
+        [StringLength(1000)]
+        [DataType(DataType.MultilineText)]
+        public string __resumen { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        [Required(ErrorMessage = "Es necesario el contenido de la página")]
+        public string __content { get; set; }
+
+        [Display(Name = "Dirección URL", Description = "Direccion url a la cual, cuando se llame la página esta va a saltar (esta opción ignora el contenido de la página)."), StringLength(255)]
+        public string TargetUrl { get; set; }
+
+        public PaginaTarget Target { get; set; }
+
+        [Display(Name = "Tiene galeria")]
+        public BoolTipo TieneGaleria { get; set; }
+
+        [Display(Name = "Visitas")]
+        public int ContadorVisitas { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Conteo desde")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime FechaContador { get; set; }
+
+        public IdiomaTipo Idioma { get; set; }
+
+        [Display(Name = "Es principal de sección")]
+        public BoolTipo EsPrincipal { get; set; }
+
+        [Display(Name = "Script encabezado")]
+        [DataType(DataType.MultilineText)]
+        public string __headScript { get; set; }
+
+        [Display(Name = "Script final")]
+        [DataType(DataType.MultilineText)]
+        public string __footerScript { get; set; }
+
+        [Display(Name = "Me gusta")]
+        public int MeGusta { get; set; }
+
+        public PaginaStatus Status { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Creación")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime FechaCreacion { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Actualización")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime FechaActualizacion { get; set; }
+
+        [StringLength(150)]
+        [Display(Name = "Actualizado por")]
+        public string UsuarioActualizacion { get; set; }
+
+        // RELACIONES
+
+        public Pagina PaginaPadre { get; set; }
+
+        public ICollection<Pagina> PaginasHijo { get; set; }
+
+        public ICollection<Archivo> Archivos { get; set; }
+
+        public ICollection<Nota> Notas { get; set; }
+
+        // CONSTRUCTORES
+
+        public PaginaEditViewModel()
+        { }
+
+        public PaginaEditViewModel(Pagina p)
+        {
+            this.PaginaID = p.PaginaID;
+            this.PaginaPadreID = p.PaginaPadreID;
+            this.Titulo = p.Titulo;
+            this.IndiceMenu = p.IndiceMenu;
+            this.EtiquetaMenu = p.EtiquetaMenu;
+            this.__resumen = p.Resumen;
+            this.__content = p.HTMLContent;
+            this.TargetUrl = p.TargetUrl;
+            this.Target = p.Target;
+            this.TieneGaleria = p.TieneGaleria;
+            this.ContadorVisitas = p.ContadorVisitas;
+            this.FechaContador = p.FechaContador;
+            this.Idioma = p.Idioma;
+            this.EsPrincipal = p.EsPrincipal;
+            this.__headScript = p.HTMLHeadScript;
+            this.__footerScript = p.HTMLFooterScript;
+            this.MeGusta = p.MeGusta;
+            this.Status = p.Status;
+
+            this.FechaCreacion = p.FechaCreacion;
+            this.FechaActualizacion = p.FechaActualizacion;
+            this.UsuarioActualizacion = p.UsuarioActualizacion;
+
+            this.PaginaPadre = p.PaginaPadre;
+            this.Archivos = p.Archivos.OrderBy(a => a.Nombre).ToList();
+            this.Notas = p.Notas.OrderByDescending(n => n.FechaCreacion).ToList();
+        } // PaginaEditViewModel : Constructor
+
+        // METODOS
+
+        public Pagina ObtenerPagina()
+        {
+            Pagina p = new Pagina
+            {
+                PaginaID = this.PaginaID,
+                PaginaPadreID = this.PaginaPadreID,
+                Titulo = this.Titulo,
+                IndiceMenu = this.IndiceMenu,
+                EtiquetaMenu = this.EtiquetaMenu,
+                Resumen = this.__resumen,
+                HTMLContent = this.__content,
+                TargetUrl = this.TargetUrl,
+                Target = this.Target,
+                TieneGaleria = this.TieneGaleria,
+                ContadorVisitas = this.ContadorVisitas,
+                FechaContador = this.FechaContador,
+                Idioma = this.Idioma,
+                EsPrincipal = this.EsPrincipal,
+                HTMLHeadScript = this.__headScript,
+                HTMLFooterScript = this.__footerScript,
+                MeGusta = this.MeGusta,
+                Status = this.Status
+            };
+
+            return p;
+        } // ObternerPagina
+
+    } // PaginaEditViewModel
 }

@@ -1,6 +1,7 @@
-﻿@model Arysoft.WebsiteMVC.Basico.Models.NoticiaDetailsViewModel
-
+﻿@using Arysoft.WebsiteMVC.Basico.Areas.Admin.Models;
 @using Arysoft.WebsiteMVC.Basico.Models;
+
+@model NoticiaDetailsViewModel
 
 @{
     string imagenPrincipalTag = string.Empty;
@@ -45,7 +46,7 @@
 <div class="modal-body">
     <div class="container-fluid">
         @if (Model.Origen == "delete")
-        { 
+        {
             <div class="row">
                 <div class="col-12">
                     <h2 class="text-danger">¿Está seguro de eliminar esta noticia?</h2>
@@ -182,21 +183,21 @@
                             </div>
                             <div class="tab-pane fade" id="archivos" role="tabpanel" aria-labelledby="archivos-tab">
                                 <h4 class="mt-3">Archivos</h4>
-                                <div id="archivosNoticiaDiv">
-                                    @Html.Partial("_archivosNoticia", Model.Archivos)
+                                <div id="archivosDiv">
+                                    @Html.Partial("~/Areas/Admin/Views/Archivos/_archivosList.cshtml", Model.Archivos)
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="notas" role="tabpanel" aria-labelledby="notas-tab">
                                 <h4 class="mt-3">Notas</h4>
-                                <div id="notasNoticiasDiv">
-                                    @Html.Partial("_notasNoticia", Model.Notas)
+                                <div id="notasDiv">
+                                    @Html.Partial("~/Areas/Admin/Views/Notas/_notasList.cshtml", Model.Notas)
                                 </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
