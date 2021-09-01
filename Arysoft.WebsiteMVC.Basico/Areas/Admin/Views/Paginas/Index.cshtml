@@ -110,7 +110,7 @@
                     @Html.DisplayFor(modelItem => item.Titulo)
                 </a>
                 <br />
-                <small title="Página padre">[@Html.DisplayFor(modelItem => item.TituloPaginaPadre)]</small>
+                <small title="Página padre">@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
             </h5>
             <div>
                 @if (item.Status != PaginaStatus.Eliminada)
@@ -161,7 +161,7 @@
     })
 )
 
-@section scripts {
+@section scripts {    
     <script>
         var modalDetailsOriginalContent = $('#details-modal-content').html();
 

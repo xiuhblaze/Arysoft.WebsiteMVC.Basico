@@ -192,6 +192,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             Pagina pagina = await db.Paginas
                 .Include(p => p.Archivos)
                 .Include(p => p.Notas)
+                .Include(p => p.PaginasHijo)
                 .FirstOrDefaultAsync(p => p.PaginaID == id);
             if (pagina == null)
             {
@@ -206,14 +207,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             }
             TempData["isReadonly"] = false;
             TempData["isPage"] = true;
-            var paginasPadreList = new SelectList(db.Paginas
-                .Where(p => p.Status == PaginaStatus.Publicada), 
-                "PaginaID", 
-                "Titulo", 
-                pagina.PaginaPadreID)
-            .ToList();
-            paginasPadreList.Insert(0, new SelectListItem { Text = "(es página padre)", Value = Guid.Empty.ToString() });
-            ViewBag.PaginaPadreID = paginasPadreList;
+            
+            ViewBag.PaginaPadreID = await ListaPaginasPadreAsync(pagina.PaginaPadreID ?? Guid.Empty, pagina.PaginaID);
 
             return View(new PaginaEditViewModel(pagina));
         } // Edit
@@ -223,7 +218,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "PaginaID,PaginaPadreID,Titulo,EtiquetaMenu,__resumen,__content,TargetUrl,Target,TieneGaleria,ContadorVisitas,FechaContador,Idioma,EsPrincipal,__headScript,__footerScript,MeGusta,Status,FechaCreacion")] PaginaEditViewModel paginaVM)
+        public async Task<ActionResult> Edit([Bind(Include = "PaginaID,PaginaPadreID,Titulo,EtiquetaMenu,__resumen,__content,TargetUrl,Target,TieneGaleria,ContadorVisitas,FechaContador,Idioma,EsPrincipal,__headScript,__footerScript,MeGusta,Status,FechaCreacion,OrdenPaginasHijo")] PaginaEditViewModel paginaVM)
         {
             Pagina pagina = paginaVM.ObtenerPagina();
 
@@ -236,6 +231,24 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                if (!string.IsNullOrEmpty(paginaVM.OrdenPaginasHijo)) // Ordenar el indice de las páginas hijo
+                {
+                    string[] ids = paginaVM.OrdenPaginasHijo.Split(',');
+                    int indice = 0;
+                    foreach (var id in ids) // HACK: Esto se puede optimizar buscando diretamente la lista en la bdd
+                    {
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            Pagina paginaHijo = await db.Paginas.FindAsync(new Guid(id));
+                            if (paginaHijo != null)
+                            {
+                                paginaHijo.IndiceMenu = indice++;
+                                db.Entry(paginaHijo).State = EntityState.Modified;
+                            }
+                        }
+                    }
+                }
+
                 pagina.FechaActualizacion = DateTime.Now;
                 pagina.UsuarioActualizacion = User.Identity.Name;
                 db.Entry(pagina).State = EntityState.Modified;
@@ -423,6 +436,37 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         }
 
         // METODOS PRIVADOS
+
+        /// <summary>
+        /// Obtiene una lista de elementos para una lista desplegable, seleccionando la página padre
+        /// y omitiendo la misma página que se va a presentar, para evitar redundancia circular.
+        /// </summary>
+        /// <param name="Seleccionado">Elemento previamente seleccinado, posiblemente la página padre</param>
+        /// <param name="Omitir">Elemento a quitar de la lista, la página que se va a visualizar</param>
+        /// <returns></returns>
+        private async Task<List<SelectListItem>> ListaPaginasPadreAsync(Guid Seleccionado, Guid Omitir)
+        {
+            List<SelectListItem> lista = new List<SelectListItem>();
+
+            lista.Add(new SelectListItem { Text = "(es página padre)", Value = Guid.Empty.ToString() });
+
+            foreach (Pagina paginaPadre in await db.Paginas
+                .Where(p => p.Status != PaginaStatus.Eliminada && p.Status != PaginaStatus.Ninguno)
+                .ToListAsync())
+            {
+                if (paginaPadre.PaginaID != Omitir)
+                {
+                    lista.Add(new SelectListItem
+                    {
+                        Text = paginaPadre.Titulo,
+                        Value = paginaPadre.PaginaID.ToString(),
+                        Selected = paginaPadre.PaginaID == Seleccionado
+                    });
+                }
+            }
+            
+            return lista;
+        } // ListaPaginasPadreAsync
 
         private async Task EliminarRegistrosTemporalesAsync(string userName)
         {

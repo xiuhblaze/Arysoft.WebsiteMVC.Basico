@@ -63,8 +63,9 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="editorTabContent">
+                        <!-- EDITOR -->
                         <div class="tab-pane fade show active" id="editor" role="tabpanel" aria-labelledby="editor-tab">
-                            
+
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             @Html.HiddenFor(model => model.PaginaID)
                             @Html.HiddenFor(model => model.TieneGaleria)
@@ -74,6 +75,7 @@
                             @Html.HiddenFor(model => model.MeGusta)
                             @Html.HiddenFor(model => model.Status)
                             @Html.HiddenFor(model => model.FechaCreacion)
+                            @Html.HiddenFor(model => model.OrdenPaginasHijo)
 
                             <div class="form-group mb-0">
                                 @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control pagina-titulo p-0", @title = "Título de la página", placeholder = "Título de la página" } })
@@ -95,27 +97,88 @@
                                 @Html.DropDownList("PaginaPadreID", null, htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.PaginaPadreID, "", new { @class = "text-danger" })
                             </div>
-                            
+
                         </div>
+                        <!-- CODIGO -->
                         <div class="tab-pane fade" id="codigo" area-labeledby="code-tab">
+                            <h4 class="mt-3">Código</h4>
+                            <p>
+                                En estos campos se permite la inclusión de código para mejorar la personalización
+                                de la página, debe de incluirse incluso los tags <strong>script</strong> o
+                                <strong>style</strong> de cierre y de apertura.
+                            </p>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.__headScript)
-                                @Html.EditorFor(model => model.__headScript, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.__headScript, new { htmlAttributes = new { @class = "form-control", @rows = "10", @aria_describedby = "headScriptHelpBlock" } })
                                 @Html.ValidationMessageFor(model => model.__headScript, "", new { @class = "text-danger" })
+                                <small id="headScriptHelpBlock" class="form-text text-muted">
+                                    Este script va en el encabezado de la página dentro de las etiquetas &lt;head&gt;
+                                    &lt;/head&gt;, al final cuando se hayan ejecutado todas las demas instrucciones del
+                                    encabezado.
+                                </small>
                             </div>
-
                             <div class="form-group">
                                 @Html.LabelFor(model => model.__footerScript)
-                                @Html.EditorFor(model => model.__footerScript, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.__footerScript, new { htmlAttributes = new { @class = "form-control", @rows = "10" } })
                                 @Html.ValidationMessageFor(model => model.__footerScript, "", new { @class = "text-danger" })
+                                <small id="footerScriptHelpBlock" class="form-text text-muted">
+                                    Este script, va al final de la página, justo antes de la etiqueta &lt;/body&gt;, considerar que ya se
+                                    han cargado librerias .js como jQuery por lo que no se recomienda volverlas a cargar.
+                                </small>
+                            </div>
+                            <div class="alert alert-info">
+                                Se recomienda editar este código en un editor afin, ya que estos cuadros de texto, no ofrecen
+                                un entorno amigable para la edición de código.
+                                <footer class="blockquote-footer">En futuras ediciones, esto se mejorará.</footer>
+                            </div>
+                            <div class="alert alert-warning">
+                                Si el código ingresado aquí, se encuentra mal construido o contiene llamadas a código
+                                malicioso, es responsabilidad de quién lo genera.
+                                <footer class="blockquote-footer"><strong>Arysoft</strong> no se hace responsable por los daños ocacionados a su sitio por consecuencia código mal elaborado.</footer>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="child" area-labeledby="child-tab">
+                        <!-- PAGINAS HIJO -->
+                        <div class="tab-pane fade" id="child" area-labeledby="child-tab" style="min-height: 500px;">
                             <h4 class="mt-2">Páginas hijo</h4>
-                            <p class="">
-                                Páginas dependientes de esta página, puede ajustar el orden en que se 
+                            <p>
+                                Páginas dependientes de esta página, puede ajustar el orden en que se
                                 muestran en los menus
                             </p>
+                            @if (Model.PaginasHijo != null && Model.PaginasHijo.Count > 0)
+                            {
+                                <ul id="childMenu" class="list-group col-md-4">
+                                @foreach (Pagina paginaHijo in Model.PaginasHijo)
+                                {
+                                    string classColor = string.Empty;
+                                    switch (paginaHijo.Status)
+                                    {
+                                        case PaginaStatus.Nueva:
+                                            classColor = "list-group-item-primary";
+                                            break;
+                                        case PaginaStatus.Publicada:
+                                            //classColor = "text-success"; //"list-group-item-success";
+                                            break;
+                                        case PaginaStatus.Oculta:
+                                            classColor = "list-group-item-secondary";
+                                            break;
+                                        case PaginaStatus.Eliminada:
+                                            classColor = "list-group-item-danger";
+                                            break;
+                                    };
+                                    <li class="list-group-item @classColor" id="@paginaHijo.PaginaID">@paginaHijo.EtiquetaMenu</li>
+                                }
+                                </ul>
+                            }
+                            else
+                            { 
+                                <div class="alert alert-info">
+                                    La página no tiene páginas hijo, para eso, cree una página nueva o en una
+                                    existente y seleccione esta página como <strong>Página padre</strong> en
+                                    los controles del Editor.
+                                </div>
+                                <ul id="childMenu" class="list-group col-md-4">
+                                </ul>
+                            }
                         </div>
                     </div>
 
@@ -338,6 +401,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
+    <script src="https://cdn.jsdelivr.net/gh/RubaXa/Sortable/Sortable.min.js"></script>
     <script src="~/Scripts/ckeditor/ckeditor.js"></script>
 
     <script>
@@ -345,6 +409,27 @@
             height: 500,
             resize_minHeight: 300,
             resize_maxHeight: 800
+        });
+
+        Sortable.create(childMenu, {
+            animation: 100,
+            group: 'listaMenu',
+            draggable: '.list-group-item',
+            handle: '.list-group-item',
+            sort: true,
+            filter: '.sortable-disabled',
+            chosenClass: 'active',
+            onEnd: function (evt) {
+                //alert(evt.newIndex);
+                var menu = document.querySelectorAll('#childMenu>li');
+                var opciones = '';
+                for (var opcion of menu) {
+                    opciones += opcion.getAttribute('id') + ',';
+                }
+                //alert(opciones);
+                opciones = opciones.slice(0, -1); // opciones.substring(0, opciones.length - 1);
+                document.getElementById('OrdenPaginasHijo').value = opciones;
+            }
         });
 
         $(document).ready(function () {
@@ -499,6 +584,7 @@
                     }
                 });
             }); // guardarNotaButton.click
+            
         }); // document.ready
     </script>
 }

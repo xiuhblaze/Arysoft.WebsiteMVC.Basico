@@ -49,7 +49,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
             this.Status = pagina.Status;
             this.FechaActualizacion = pagina.FechaActualizacion;
 
-            this.TituloPaginaPadre = pagina.PaginaPadre != null ? pagina.PaginaPadre.Titulo : string.Empty;
+            this.TituloPaginaPadre = pagina.PaginaPadre != null ? pagina.PaginaPadre.Titulo : "(es página padre)";
 
             this.ContadorArchivos = pagina.Archivos != null ? pagina.Archivos.Count : 0;
             this.ContadorNotas = pagina.Notas != null ? pagina.Notas.Count : 0;
@@ -183,6 +183,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
         [Display(Name = "Actualizado por")]
         public string UsuarioActualizacion { get; set; }
 
+        /// <summary>
+        /// Obtien el orden de las páginas hijo, para ser actualizado, si se encuentra vacio
+        /// es que no se alteró el orden.
+        /// </summary>
+        public string OrdenPaginasHijo { get; set; }
+
         // RELACIONES
 
         public Pagina PaginaPadre { get; set; }
@@ -223,9 +229,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
             this.FechaActualizacion = p.FechaActualizacion;
             this.UsuarioActualizacion = p.UsuarioActualizacion;
 
+            this.OrdenPaginasHijo = string.Empty;
+
             this.PaginaPadre = p.PaginaPadre;
             this.Archivos = p.Archivos.OrderBy(a => a.Nombre).ToList();
             this.Notas = p.Notas.OrderByDescending(n => n.FechaCreacion).ToList();
+            this.PaginasHijo = p.PaginasHijo.OrderBy(ph => ph.IndiceMenu).ToList();
         } // PaginaEditViewModel : Constructor
 
         // METODOS
