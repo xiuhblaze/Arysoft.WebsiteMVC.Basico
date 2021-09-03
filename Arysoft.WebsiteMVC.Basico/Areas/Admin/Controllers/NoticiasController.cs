@@ -527,7 +527,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                     NotaID = Guid.NewGuid(),
                     PropietarioID = id,
                     Texto = nota,
-                    Autor = "<nombre del autor>",
+                    Autor = User.Identity.Name,
                     Status = StatusTipo.Activo,
                     FechaCreacion = DateTime.Now,
                     FechaActualizacion = DateTime.Now,

@@ -6,19 +6,23 @@
 @{
     string classStatusAlert = "alert alert-secondary";
     string classStatusIcon = "";
+    string classCard = "card";
 
     switch (Model.Status)
     {
         case PaginaStatus.Nueva:
             classStatusIcon = "<i class='bi-stars mr-1 text-primary icon' title='Nueva'></i>";
             classStatusAlert = "alert alert-primary";
+            classCard = "card border-primary";
             break;
         case PaginaStatus.Publicada:
             classStatusIcon = "<i class='bi-cursor mr-1 text-success icon' title='Publicada'></i>";
             classStatusAlert = "alert alert-success";
+            classCard = "card border-success";
             break;
         case PaginaStatus.Oculta:
             classStatusIcon = "<i class='bi-eye-slash mr-1 icon' title='Oculta'></i>";
+            classCard = "card border-secondary";
             //classStatusAlert = "alert alert-primary";
             //classMeGustaBadge = "badge badge-secondary";
             //classVisitasBadge = "badge badge-secondary";
@@ -28,6 +32,7 @@
             classStatusAlert = "alert alert-danger";
             //classMeGustaBadge = "badge badge-danger";
             //classVisitasBadge = "badge badge-danger";
+            classCard = "card border-danger";
             break;
     }
 }
@@ -50,7 +55,7 @@
         }
         <div class="row">
             <div class="col-md-8">
-                <div class="card shadow">
+                <div class="@classCard shadow">
                     <div class="card-body">
                         <h1 class="display-4" title="@Html.DisplayNameFor(model => model.Titulo)">
                             @Html.DisplayFor(model => model.Titulo)
@@ -103,64 +108,108 @@
                             <ul class="nav nav-tabs" id="detailsTab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link active" id="informacion-tab" data-toggle="tab" href="#informacion" role="tab" aria-controls="informacion" aria-selected="true">
-                                        Información
+                                        <i class="bi-info-circle"></i>
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">
-                                        Archivos
+                                        <i class="bi-files"></i>
                                         <span id="archivosTabCount" class="badge badge-primary badge-pill">0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link" id="notas-tab" data-toggle="tab" href="#notas" role="tab" aria-controls="notas" aria-selected="false">
-                                        Notas
+                                        <i class="bi-square-fill text-warning"></i>
                                         <span id="notasTabCount" class="badge badge-primary badge-pill">0</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="scripts-tab" data-toggle="tab" href="#scripts" role="tab" aria-controls="scripts" aria-selected="false">
+                                        <i class="bi-code" title="código"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="hijos-tab" data-toggle="tab" href="#hijos" role="tab" aria-controls="hijos" aria-selected="false">
+                                        <i class="bi-bar-chart-steps text-danger"></i>
+                                        <span id="hijosTabCount" class="badge badge-primary badge-pill">@Model.PaginasHijo.Count</span>
                                     </a>
                                 </li>
                             </ul>
                             <div class="tab-content" id="detailsTabContent">
                                 <div class="tab-pane fade show active" id="informacion" role="tabpanel" aria-labelledby="informacion-tab">
-                                    <dl class="row mt-3">
-                                        <dt class="col-6 text-right">
-                                            @Html.DisplayNameFor(model => model.TieneGaleria)
-                                        </dt>
-                                        <dd class="col-6">
-                                            @Html.DisplayFor(model => model.TieneGaleria)
-                                        </dd>
+                                    @if (!string.IsNullOrEmpty(Model.TargetUrl))
+                                    { 
+                                        <div class="alert alert-primary">
+                                            <strong>IMPORTANTE</strong>
+                                            La página va a ser redireccionada a la dirección:
+                                            <br />
+                                            <a href="@Model.TargetUrl" target="_blank">@Model.TargetUrl</a>
+                                        </div>
+                                    }
+                                <dl class="row mt-3">
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.EtiquetaMenu)
+                                    </dt>
+                                    <dd class="col-6">
+                                        <h5>
+                                            <span class="badge badge-light" style="display: block;">
+                                                @Html.DisplayFor(model => model.EtiquetaMenu)
+                                            </span>
+                                        </h5>
+                                    </dd>
 
-                                        <dt class="col-6 text-right">
-                                            @Html.DisplayNameFor(model => model.Idioma)
-                                        </dt>
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.EsPrincipal)
+                                    </dt>
+                                    <dd class="col-6">
+                                        @Html.DisplayFor(model => model.EsPrincipal)
+                                    </dd>
 
-                                        <dd class="col-6">
-                                            @Model.Idioma.GetDisplayName()
-                                        </dd>
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.TieneGaleria)
+                                    </dt>
+                                    <dd class="col-6">
+                                        @Html.DisplayFor(model => model.TieneGaleria)
+                                    </dd>
 
-                                        <dt class="col-6 text-right">
-                                            @Html.DisplayNameFor(model => model.FechaCreacion)
-                                        </dt>
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.Idioma)
+                                    </dt>
 
-                                        <dd class="col-6">
-                                            @Html.DisplayFor(model => model.FechaCreacion)
-                                        </dd>
+                                    <dd class="col-6">
+                                        @Model.Idioma.GetDisplayName()
+                                    </dd>
 
-                                        <dt class="col-6 text-right">
-                                            @Html.DisplayNameFor(model => model.FechaActualizacion)
-                                        </dt>
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.Target)
+                                    </dt>
+                                    <dd class="col-6">
+                                        @Html.DisplayFor(model => model.Target)
+                                    </dd>
 
-                                        <dd class="col-6">
-                                            @Html.DisplayFor(model => model.FechaActualizacion)
-                                        </dd>
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.FechaCreacion)
+                                    </dt>
+                                    <dd class="col-6">
+                                        @Html.DisplayFor(model => model.FechaCreacion)
+                                    </dd>
 
-                                        <dt class="col-6 text-right">
-                                            @Html.DisplayNameFor(model => model.UsuarioActualizacion)
-                                        </dt>
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.FechaActualizacion)
+                                    </dt>
 
-                                        <dd class="col-6">
-                                            @Html.DisplayFor(model => model.UsuarioActualizacion)
-                                        </dd>
-                                    </dl>
+                                    <dd class="col-6">
+                                        @Html.DisplayFor(model => model.FechaActualizacion)
+                                    </dd>
+
+                                    <dt class="col-6 text-right">
+                                        @Html.DisplayNameFor(model => model.UsuarioActualizacion)
+                                    </dt>
+
+                                    <dd class="col-6">
+                                        @Html.DisplayFor(model => model.UsuarioActualizacion)
+                                    </dd>
+                                </dl>
                                 </div>
                                 <div class="tab-pane fade" id="archivos" role="tabpanel" aria-labelledby="archivos-tab">
                                     <h4 class="mt-3">Archivos</h4>
@@ -173,6 +222,10 @@
                                     <div id="notasDiv">
                                         @Html.Partial("~/Areas/Admin/Views/Notas/_notasList.cshtml", Model.Notas)
                                     </div>
+                                </div>
+                                <div class="tab-pane fade" id="scripts" role="tabpanel" aria-labelledby="scripts-tab">
+                                    <h4 class="mt-3">Códigos</h4>
+
                                 </div>
                             </div>
 

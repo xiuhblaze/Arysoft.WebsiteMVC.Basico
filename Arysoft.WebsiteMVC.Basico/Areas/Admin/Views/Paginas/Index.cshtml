@@ -27,7 +27,7 @@
     </div>
 </div>
 
-<h2>Paginas</h2>
+<h2>Páginas</h2>
 <div class="row">
     <div class="col-md-12">
         @using (Html.BeginForm("Index", "Paginas", FormMethod.Get, new { @class = "form-inline mb-2" }))
@@ -105,26 +105,23 @@
 
     <div class="@classListGroup">
         <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">
+            <h5 class="mb-0">
                 <a href="javascript: getDetails('@item.PaginaID');" title="Ver detalles de la página">
-                    @Html.DisplayFor(modelItem => item.Titulo)
-                </a>
-                <br />
+                    @Html.DisplayFor(modelItem => item.Titulo)</a>&nbsp;
                 <small title="Página padre">@Html.DisplayFor(modelItem => item.TituloPaginaPadre)</small>
             </h5>
             <div>
                 @if (item.Status != PaginaStatus.Eliminada)
                 {
                     @Html.Raw(
-                        @Html.ActionLink("[editar]", "Edit", new { id = item.PaginaID }, new { @class = "btn btn-link" }).ToHtmlString()
+                        @Html.ActionLink("[editar]", "Edit", new { id = item.PaginaID }, new { @class = "btn btn-link btn-sm" }).ToHtmlString()
                             .Replace("[editar]", "<i class='bi-pencil-square' style='font-size: 1.2rem;'></i>")
                     );
                 }
-
-                <span href="#" onclick="getDetails('@item.PaginaID'); return false;" class="btn btn-link">
+                <span href="#" onclick="getDetails('@item.PaginaID'); return false;" class="btn btn-link btn-sm">
                     <i class='bi-info-square' style='font-size: 1.2rem;' title="Detalles"></i>
                 </span>
-                <span href="#" onclick="getDelete('@item.PaginaID'); return false;" class="btn btn-link text-danger">
+                <span href="#" onclick="getDelete('@item.PaginaID'); return false;" class="btn btn-link btn-sm text-danger">
                     <i class='bi-x-square' style='font-size: 1.2rem;' title="Eliminar"></i>
                 </span>
             </div>

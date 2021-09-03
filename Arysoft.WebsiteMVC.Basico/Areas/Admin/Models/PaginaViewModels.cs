@@ -101,6 +101,7 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Models
             this.PaginaPadre = pagina.PaginaPadre;
             this.Archivos = pagina.Archivos.OrderBy(a => a.Nombre).ToList();
             this.Notas = pagina.Notas.OrderByDescending(n => n.FechaCreacion).ToList();
+            this.PaginasHijo = pagina.PaginasHijo.OrderBy(p => p.IndiceMenu).ToList();
 
             this.Origen = origen;
             this.SoloLectura = soloLectura ?? false;

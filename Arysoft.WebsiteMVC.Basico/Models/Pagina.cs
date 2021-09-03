@@ -35,6 +35,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
         public PaginaTarget Target { get; set; }
 
+        [Display(Name = "Tiene galeria")]
         public BoolTipo TieneGaleria { get; set; }
 
         [Display(Name = "Visitas")]
@@ -47,6 +48,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
 
         public IdiomaTipo Idioma { get; set; }
 
+        [Display(Name = "Es página principal")]
         public BoolTipo EsPrincipal { get; set; }
 
         [Display(Name = "Script encabezado")]
@@ -55,6 +57,7 @@ namespace Arysoft.WebsiteMVC.Basico.Models
         [Display(Name = "Script final")]
         public string HTMLFooterScript { get; set; }
 
+        [Display(Name = "Me gusta")]
         public int MeGusta { get; set; }
 
         public PaginaStatus Status { get; set; }

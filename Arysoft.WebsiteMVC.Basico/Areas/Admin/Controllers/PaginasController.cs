@@ -107,6 +107,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             Pagina pagina = await db.Paginas
                 .Include(p => p.Archivos)
                 .Include(p => p.Notas)
+                .Include(p => p.PaginaPadre)
+                .Include(p => p.PaginasHijo)
                 .FirstOrDefaultAsync(p => p.PaginaID == id);
             if (pagina == null)
             {
@@ -221,7 +223,6 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
         public async Task<ActionResult> Edit([Bind(Include = "PaginaID,PaginaPadreID,Titulo,EtiquetaMenu,__resumen,__content,TargetUrl,Target,TieneGaleria,ContadorVisitas,FechaContador,Idioma,EsPrincipal,__headScript,__footerScript,MeGusta,Status,FechaCreacion,OrdenPaginasHijo")] PaginaEditViewModel paginaVM)
         {
             Pagina pagina = paginaVM.ObtenerPagina();
-
             bool esNuevo = pagina.Status == PaginaStatus.Ninguno;
 
             if (esNuevo)
@@ -248,14 +249,12 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
                         }
                     }
                 }
-
                 pagina.FechaActualizacion = DateTime.Now;
                 pagina.UsuarioActualizacion = User.Identity.Name;
                 db.Entry(pagina).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 if (esNuevo) { TempData["MessageBox"] = "Registro guardado satisfactoriamente."; }
                 else { TempData["MessageBox"] = "Cambios guardados con exito."; }
-
                 return RedirectToAction("Index");
             }
 
@@ -277,6 +276,8 @@ namespace Arysoft.WebsiteMVC.Basico.Areas.Admin.Controllers
             Pagina pagina = await db.Paginas
                 .Include(p => p.Archivos)
                 .Include(p => p.Notas)
+                .Include(p => p.PaginaPadre)
+                .Include(p => p.PaginasHijo)
                 .FirstOrDefaultAsync(p => p.PaginaID == id);
             if (pagina == null)
             {
